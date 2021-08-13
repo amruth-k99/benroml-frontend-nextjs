@@ -1,0 +1,43 @@
+html {
+  scroll-behavior: smooth;
+  font-family: play, sans-serif;
+}
+@import url("https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Play&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap");
+.footer {
+  padding: 35px 0px;
+  color: black;
+  background-color: #007ef2;
+  font-size: 17px;
+}
+
+.poppins {
+  font-family: "Poppins", Arial, sans-serif;
+}
+
+.bg-gold1 {
+  background-image: radial-gradient(
+    circle 970px at 2.9% 7.5%,
+    rgba(255, 229, 59, 1) 2.8%,
+    rgba(255, 186, 73, 1) 97.6%
+  );
+}
+
+@media (min-width: 768px) {
+  .foot-box {
+    flex: 1 1 0%;
+    margin-top: 0px;
+  }
+}
+
+.foot-box {
+  flex: 0 1 50%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 32px;
+}
+.f-box {
+  flex: 0 0 50%;
+  max-width: 50%;
+}
