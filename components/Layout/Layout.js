@@ -1,6 +1,12 @@
-import Navbar from "./Navbar";
-import Footer from "./footer";
-const Layout = ({ navbar = true, footer = true, children }) => {
+import Navbar from "../Navbar";
+import Sidebar from "../Sidebar";
+import Footer from "../footer";
+const Layout = ({
+  navbar = true,
+  sidebar = false,
+  footer = true,
+  children,
+}) => {
   return (
     <div>
       {navbar && (
@@ -8,6 +14,8 @@ const Layout = ({ navbar = true, footer = true, children }) => {
           <Navbar />
         </div>
       )}
+
+      {sidebar && <Sidebar />}
 
       {children}
 

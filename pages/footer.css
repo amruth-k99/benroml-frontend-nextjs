@@ -41,3 +41,15 @@ html {
   flex: 0 0 50%;
   max-width: 50%;
 }
+.animate-drop {
+  transition: all 0.05s linear;
+}
+.tryes {
+  transition: all 0.1s linear;
+}
+.touch-overlay {
+  position: fixed !important;
+  width: 100vw !important;
+  height: 100vh;
+  z-index: 900 !important;
+}

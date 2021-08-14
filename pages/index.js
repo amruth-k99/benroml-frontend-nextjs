@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import Layout from "../components/Layout";
+import Layout from "../components/Layout/Layout";
 import Logo from "../assets/logo_outline_1.png";
 import Meditate from "../assets/Backgrounds/meditate.jpg";
 import BlogsCategory from "../assets/images/blogs_category.jpg";
@@ -28,6 +28,10 @@ export default function Fitness() {
   const [expired] = useState(false);
   return (
     <Layout>
+      <Head>
+        <title>BENORML | Where fitness becomes your lifestyle</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <main>
         <div className="bg-white overflow-hidden">
           <div className="max-w-7xl mx-auto">
