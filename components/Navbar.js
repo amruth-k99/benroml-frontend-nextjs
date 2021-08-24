@@ -109,12 +109,12 @@ const NavBar = () => {
                       Dashboard
                     </a>
                   ) : (
-                    <a
+                    <Link
                       href="/login"
-                      className="font-semibold px-7 p-3 rounded-lg duration-200 text-white ml-auto"
+                      className="font-semibold px-7 p-3 text-white rounded-lg duration-200 ml-auto"
                     >
                       Log in
-                    </a>
+                    </Link>
                   )}
                 </div>
               </div>

@@ -5,23 +5,18 @@ import Layout from "../components/Layout/Layout";
 import Logo from "../assets/logo_outline_1.png";
 import Meditate from "../assets/Backgrounds/meditate.jpg";
 import BlogsCategory from "../assets/images/blogs_category.jpg";
-import YogaPose from "../assets/images/yoga_pose.jpg";
 import FitnessCategory from "../assets/images/fitness_category.jpg";
-import LogoOutLine from "../assets/logo-white-outline.png";
-import Collage from "../assets/Backgrounds/collage.jpg";
-import SumanthBabu from "../assets/images/thinking.jpg";
 import { MdFitnessCenter } from "react-icons/md";
 import { BiRun } from "react-icons/bi";
 import { SiMicroDotBlog } from "react-icons/si";
 import TopBlogs from "../components/Blogs/topBlogs";
-import Yoga from "../assets/images/yoga.jpg";
 import SumanthImage from "../assets/images/sumanth.jpg";
 import Support from "../components/support";
 import { BsArrowDown } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 
-export default function Fitness() {
+export default function Home() {
   const { isLoggedIn, username } = useSelector((store) => store);
   const [reviews, setReview] = useState([]);
   const [aboutToExpire] = useState(false);
