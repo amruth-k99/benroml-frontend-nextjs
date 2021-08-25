@@ -45,14 +45,16 @@ const NavBar = () => {
             <div className="flex items-center w-full sm:w-full lg:w-auto flex-grow flex-shrink-0 lg:flex-grow-0">
               <div className="flex items-center justify-between w-full md:w-auto">
                 <Link href="/">
-                  <div className="h-12 w-48 relative">
-                    <Image
-                      src={Logo}
-                      alt="BENORML"
-                      layout="fill" // required
+                  <span className="cursor-pointer">
+                    <span className="sr-only">Benorml</span>
+                    <img
+                      className="h-10 w-auto sm:h-10"
+                      src={
+                        "https://benorml.com/static/media/logo_outline_white.5835fcd9.png"
+                      }
                       alt=""
                     />
-                  </div>
+                  </span>
                 </Link>
                 <div className="-mr-2 flex items-center justify-end md:hidden">
                   <button
@@ -86,16 +88,18 @@ const NavBar = () => {
               <div className="w-full flex justify-between">
                 <div>
                   {nav_items.map((item, k) => (
-                    <Link href={item.link}>
+                    <Link
+                      href={item.link}
+                      key={k}
+                      onClick={() => setSelected(k)}
+                    >
                       <span
                         className={
                           selected === k
-                            ? "font-semibold cursor-pointer px-7 py-3 text-white hover:bg-orange-600 rounded-lg duration-200"
-                            : "font-semibold cursor-pointer text-white px-7 py-3 hover:text-white hover:bg-orange-600 rounded-lg duration-200"
+                            ? "font-semibold px-7 py-3 text-white hover:bg-orange-600 rounded-lg duration-200"
+                            : "font-semibold text-white px-7 py-3 hover:text-white hover:bg-orange-600 rounded-lg duration-200"
                         }
-                        onClick={() => setSelected(k)}
                       >
-                        {" "}
                         {item.title}
                       </span>
                     </Link>
@@ -109,11 +113,10 @@ const NavBar = () => {
                       Dashboard
                     </a>
                   ) : (
-                    <Link
-                      href="/login"
-                      className="font-semibold px-7 p-3 text-white rounded-lg duration-200 ml-auto"
-                    >
-                      Log in
+                    <Link href="/login">
+                      <span className="font-semibold px-7 p-3 rounded-lg duration-200 text-white ml-auto">
+                        Log in
+                      </span>
                     </Link>
                   )}
                 </div>
@@ -153,7 +156,13 @@ const NavBar = () => {
         >
           <div className="px-5 pt-4 flex items-center justify-between">
             <Link href="/">
-              <img className="h-8 w-auto" src={BlackLogo} alt="Benorml" />
+              <img
+                className="h-8 w-auto"
+                src={
+                  "https://benorml.com/static/media/logo_outline_white.5835fcd9.png"
+                }
+                alt="Benorml"
+              />
             </Link>
             <div className="-mr-2">
               <button
@@ -183,22 +192,22 @@ const NavBar = () => {
           </div>
           <div className="px-2 pt-2 pb-3 space-y-1">
             {nav_items.map((item, k) => (
-              <Link href={item.link}>
+              <a href={item.link || "/"} key={k}>
                 <span className="block px-3 py-2 rounded-md text-base font-semibold text-gray-800 hover:text-gray-900 hover:bg-gray-50">
                   {item.title}
                 </span>
-              </Link>
+              </a>
             ))}
           </div>
           {isLoggedIn ? (
-            <Link href="/login">
-              <span
-                className="block w-full px-5 py-3 text-center font-medium text-white bg-red-600 hover:bg-gray-100"
-                onClick={() => {
-                  dispatch(clearData());
-                  window.location.reload();
-                }}
-              >
+            <Link
+              href="/login"
+              // onClick={() => {
+              //   dispatch(clearData());
+              //   window.location.reload();
+              // }}
+            >
+              <span className="block w-full px-5 py-3 text-center font-medium text-white bg-red-600 hover:bg-gray-100">
                 Log out
               </span>
             </Link>

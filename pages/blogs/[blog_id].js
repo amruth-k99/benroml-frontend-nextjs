@@ -110,8 +110,8 @@ const BlogPage = ({ blogData }) => {
                           </h1>
                           <p className="text-sm font-medium text-gray-500">
                             Published on{" "}
-                            <time className="mr-2" datetime="2020-08-25">
-                              August 25, 2020
+                            <time className="mr-2" datetime="2021-08-25">
+                              August 25, 2021
                             </time>{" "}
                             | <span className="ml-2">7 min read</span>{" "}
                           </p>
@@ -179,7 +179,7 @@ const BlogPage = ({ blogData }) => {
                                     </div>
                                   </div>
                                 </li>
-                              ))}{" "}
+                              ))}
                             </ul>
                           </div>
                         </div>
@@ -235,6 +235,14 @@ const BlogPage = ({ blogData }) => {
                                     className="shadow-sm block w-full focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 rounded-md"
                                     placeholder="Add a note"
                                   ></textarea>
+                                </div>
+                                <div className="bg-yellow-100">
+                                  {" "}
+                                  Please{" "}
+                                  <Link href="/login">
+                                    <span className="underline ">login</span>
+                                  </Link>{" "}
+                                  to comment
                                 </div>
                                 <div className="mt-3 flex items-center justify-between">
                                   <div className="group inline-flex items-start text-sm space-x-2 text-gray-500 hover:text-gray-900"></div>

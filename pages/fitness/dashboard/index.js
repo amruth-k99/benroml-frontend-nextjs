@@ -9,6 +9,7 @@ import ManAvatar from "../../../assets/gender/man_1.png";
 import { BiRun } from "react-icons/bi";
 
 import Footer from "../../../components/footer";
+import Modal from "../../../components/Modal";
 import YetToStart from "../../../components/yet_to_start";
 import Confetti from "../../../components/confetti";
 import { getDashboardData } from "../../../api/dashboard";
@@ -17,11 +18,13 @@ import {
   clearData,
   setTodaysWorkout,
 } from "../../../redux/actions/userActions";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function FitnessDashboard() {
   const dispatch = useDispatch();
   const { token, username } = useSelector((store) => store);
+  const pincodeRef = useRef();
+  const workoutRef = useRef();
 
   const [today_data, setToday] = useState(false);
   const [finished, setFinished] = useState(false);
@@ -39,6 +42,7 @@ export default function FitnessDashboard() {
     link: "",
   });
   const [loading, setLoading] = useState(true);
+  const [welldoneModal, setWelldoneModal] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -79,6 +83,15 @@ export default function FitnessDashboard() {
       setLoading(false);
     });
   }, []);
+
+  const ScrollToWorkout = () => {
+    if (workoutRef.current) {
+      workoutRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  };
 
   const updateCurrentDate = () => {
     fetch(
@@ -142,6 +155,35 @@ export default function FitnessDashboard() {
       );
   };
 
+  const WellDoneModal = (props) => {
+    return (
+      <Modal ref={pincodeRef} onClose={() => setWelldoneModal(false)}>
+        <Confetti />
+        <div className="p-2">
+          <div className="font-bold text-center mt-4 text-2xl">
+            🎉 Well Done! 🎉
+          </div>
+          <div className="text-center mt-3">Rest and Recover.</div>
+          <div className="text-center mt-3">
+            You need to regain the energy needed to comeback again!
+          </div>
+          <div className="text-center mt-3">
+            Because you are worth the fight!
+          </div>
+
+          <div
+            onClick={() => {
+              props.finished();
+            }}
+            className="text-center mt-3 uppercase cursor-pointer text-md font-bold border-2 py-2 rounded-sm bg-green-500 hover:bg-green-600 text-white "
+          >
+            Exit
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -165,22 +207,22 @@ export default function FitnessDashboard() {
         </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main className="my-4">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* <!-- Page header --> */}
 
-          {finished ? (
+          {finished && (
             <div className="block duration-300">
               <WellDone />
-              <WellDoneModal
-                finished={() => {
-                  setFinished(false);
-                  window.location.reload();
-                }}
-              />
+              {welldoneModal && (
+                <WellDoneModal
+                  finished={() => {
+                    setFinished(false);
+                    window.location.reload();
+                  }}
+                />
+              )}
             </div>
-          ) : (
-            ""
           )}
 
           <div className="bg-white shadow-md rounded-xl">
@@ -278,6 +320,7 @@ export default function FitnessDashboard() {
                           refe="reference"
                           exerciseClicked={(exercise) => {
                             setCurrentReference(exercise);
+                            ScrollToWorkout();
                           }}
                         />
                       </div>
@@ -292,6 +335,7 @@ export default function FitnessDashboard() {
                           color="red"
                           exerciseClicked={(link) => {
                             setCurrentReference(link);
+                            ScrollToWorkout();
                           }}
                         />
                       </div>
@@ -305,6 +349,7 @@ export default function FitnessDashboard() {
                           color="#7c3aed"
                           exerciseClicked={(link) => {
                             setCurrentReference(link);
+                            ScrollToWorkout();
                           }}
                         />
                       </div>
@@ -319,6 +364,7 @@ export default function FitnessDashboard() {
                           refe="reference"
                           exerciseClicked={(link) => {
                             setCurrentReference(link);
+                            ScrollToWorkout();
                           }}
                         />
                       </div>
@@ -329,12 +375,13 @@ export default function FitnessDashboard() {
             </div>
           </div>
 
-          <div className="mt-8 mx-auto grid grid-cols-1 gap-6 lg:grid-flow-col-dense lg:grid-cols-3">
-            <div className="sm:col-span-1 flex justify-center">
+          <div className="mt-8 mx-auto">
+            <div className="sm:col-span-1 flex mx-auto justify-center">
               <div className="m-auto">
                 <div
                   onClick={() => {
                     setFinished(true);
+                    setWelldoneModal(true);
                     updateCurrentDate();
                   }}
                   className="inline-flex cursor-pointer  m-auto items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
@@ -376,7 +423,7 @@ export default function FitnessDashboard() {
               </section>
             </div>
           </div>
-          <div id="reference"></div>
+          <div id="reference" ref={workoutRef}></div>
         </div>
       </main>
     </DashboardLayout>
@@ -442,7 +489,6 @@ const WorkoutSetsItem = (props) => {
                 <td className="max-w-0 w-full px-6 py-4 whitespace-nowrap text-sm text-black">
                   <div className="flex">
                     <a
-                      href="#reference"
                       onClick={() => props.exerciseClicked(item)}
                       className="group cursor-pointer inline-flex space-x-2 text-sm"
                     >
@@ -506,7 +552,6 @@ const WorkoutItem = (props) => {
                 <td className="max-w-0 w-full px-6 py-4 whitespace-nowrap text-sm text-black">
                   <div className="flex">
                     <a
-                      href="#reference"
                       onClick={() =>
                         props.exerciseClicked({
                           name: item.name,
@@ -551,32 +596,6 @@ const WellDone = () => {
   return (
     <div>
       <Confetti />
-    </div>
-  );
-};
-
-const WellDoneModal = (props) => {
-  return (
-    <div className="fixed top-40 left-4 lg:left-64 md:right-44 mx-auto rounded-md duration-200 fadeIn bg-white border-2 border-gray-300 shadow-2xl h-auto mr-4">
-      <div className="p-2">
-        <div className="font-bold text-center mt-4 text-2xl">
-          🎉 Well Done! 🎉
-        </div>
-        <div className="text-center mt-3">Rest and Recover.</div>
-        <div className="text-center mt-3">
-          You need to regain the energy needed to comeback again!
-        </div>
-        <div className="text-center mt-3">Because you are worth the fight!</div>
-
-        <div
-          onClick={() => {
-            props.finished();
-          }}
-          className="text-center mt-3 uppercase cursor-pointer text-md font-bold border-2 py-2 rounded-xl bg-green-500 text-white "
-        >
-          Exit
-        </div>
-      </div>
     </div>
   );
 };

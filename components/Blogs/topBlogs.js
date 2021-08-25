@@ -20,7 +20,7 @@ const TopBlogs = ({ count = 3 }) => {
       type={blog.type}
       title={blog.title}
       author={blog.author}
-      date="Mar 16, 2020"
+      date="Mar 16, 2021"
       time={blog.read_time}
       delay="100"
       link={`/blogs/${blog.permalink}`}

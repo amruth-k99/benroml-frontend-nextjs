@@ -3,7 +3,7 @@ import Confetti from "react-confetti";
 
 const ConfettiItem = () => {
   return (
-    <div className="fixed top-0 z-10">
+    <div className="fixed top-0 z-30">
       <Confetti
         recycle={false}
         width={window.screen.width}

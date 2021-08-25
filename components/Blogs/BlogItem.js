@@ -60,7 +60,7 @@ const BlogCard = ({
                 </a>
               </p>
               <div className="flex space-x-1 text-sm text-gray-500">
-                <time dateTime="2020-03-16">{date}</time>
+                <time dateTime="2021-03-16">{date}</time>
                 <span aria-hidden="true">&middot;</span>
                 <span>{time} read</span>
               </div>

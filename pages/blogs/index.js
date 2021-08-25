@@ -77,7 +77,7 @@ export default function Fitness() {
         <div className="relative overflow-hidden">
           <main>
             {/* Stats */}
-            <div id="read" className="bg-gray-50 pt-6">
+            <div id="read" className="bg-gray-50 pt-6 mt-12">
               {/* <!-- Blog section --> */}
               <HelpfulResources count={10} />
             </div>

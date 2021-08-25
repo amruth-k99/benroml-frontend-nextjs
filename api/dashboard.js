@@ -1,6 +1,8 @@
+const { baseURL } = process.env;
 const getDashboardData = (token) => {
   return new Promise(async (resolve, reject) => {
-    await fetch(`https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/fitness/dashboard`, {
+    console.log(baseURL);
+    await fetch(`${baseURL}/fitness/dashboard`, {
       headers: {
         "x-auth-token": token,
       },
@@ -15,7 +17,7 @@ const getDashboardData = (token) => {
 
 const getPlans = (token) => {
   return new Promise(async (resolve, reject) => {
-    await fetch(`https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/fitness/plans`, {
+    await fetch(`${baseURL}/fitness/plans`, {
       headers: {
         "x-auth-token": token,
       },

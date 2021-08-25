@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { clearData } from "../../redux/actions/userActions";
 import Image from "next/image";
 import Logo from "../../assets/logo-white-outline.png";
 
@@ -10,32 +13,27 @@ import { MdDashboard, MdTrackChanges } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
 
 const DashboardLayout = (props) => {
+  const dispatch = useDispatch();
+  const router = useRouter();
   const [active, setActive] = useState(0);
   const [openSidebar, setSidebar] = useState(false);
+
+  const onLogout = () => {
+    dispatch(clearData());
+    router.push("/");
+  };
 
   return (
     <div
       style={{ zIndex: 5 }}
       className="relative h-screen flex overflow-hidden bg-white"
     >
-      {/* <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. --> */}
       <div
         className="fixed inset-0 flex lg:hidden"
         style={openSidebar ? { zIndex: 40 } : { zIndex: -10 }}
         role="dialog"
         aria-modal="true"
       >
-        {/* <!--
-      Off-canvas menu overlay, show/hide based on off-canvas menu state.
-
-      Entering: "transition-opacity ease-linear duration-300"
-        From: "opacity-0"
-        To: "opacity-100"
-      Leaving: "transition-opacity ease-linear duration-300"
-        From: "opacity-100"
-        To: "opacity-0"
-    --> */}
-        {/* {openSidebar && ( */}
         <div
           className={
             openSidebar
@@ -46,39 +44,20 @@ const DashboardLayout = (props) => {
           onClick={() => setSidebar(false)}
           aria-hidden="true"
         ></div>
-        {/* )} */}
-
-        {/* <!--
-      Off-canvas menu, show/hide based on off-canvas menu state.
-
-      Entering: "transition ease-in-out duration-300 transform"
-        From: "-translate-x-full"
-        To: "translate-x-0"
-      Leaving: "transition ease-in-out duration-300 transform"
-        From: "translate-x-0"
-        To: "-translate-x-full"
-    --> */}
         <div
           style={openSidebar ? { zIndex: 50 } : {}}
           className={
             openSidebar
-              ? "transition ease-in-out duration-300 transform translate-x-0 relative flex-1 flex flex-col max-w-xs w-full bg-white focus:outline-none"
-              : "-translate-x-full transition ease-in-out duration-300 transform relative flex-1 flex flex-col max-w-xs w-full bg-white focus:outline-none"
+              ? "transition ease-in-out duration-300 transform translate-x-0 relative flex-1 flex flex-col max-w-xs w-full bg-black focus:outline-none"
+              : "-translate-x-full transition ease-in-out duration-300 transform relative flex-1 flex flex-col max-w-xs w-full bg-black focus:outline-none"
           }
         >
-          {/* <!--
-        Close button, show/hide based on off-canvas menu state.
-
-        Entering: "ease-in-out duration-300"
-          From: "opacity-0"
-          To: "opacity-100"
-        Leaving: "ease-in-out duration-300"
-          From: "opacity-100"
-          To: "opacity-0"
-      --> */}
           <div className="absolute top-0 right-0 -mr-12 pt-2">
             <button
               type="button"
+              onClick={() => {
+                setSidebar(false);
+              }}
               className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
             >
               <span className="sr-only">Close sidebar</span>
@@ -102,36 +81,38 @@ const DashboardLayout = (props) => {
           </div>
 
           <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-            <Link
-              href="/dashboard"
-              className="flex-shrink-0 flex items-center px-4"
-            >
-              <img className="h-8 w-auto mx-auto" src={Logo} alt="Databeat" />
+            <Link href="/dashboard">
+              <div className="flex-shrink-0 flex items-center px-4">
+                <img
+                  className="h-10 w-auto mx-auto"
+                  src={
+                    "https://benorml.com/static/media/logo_outline_white.5835fcd9.png"
+                  }
+                  alt="Databeat"
+                />
+              </div>
             </Link>
             <nav aria-label="Sidebar" className="mt-5">
-              <div className="px-2 space-y-1">
+              <div className="p-2 space-y-1">
                 {/* <!-- Current: "bg-gray-100 text-gray-900", Default: "text-gray-600 hover:bg-gray-50 hover:text-gray-900" --> */}
                 {dashboardRoutes.map((route, k) => (
-                  <Link
-                    href={route.link}
-                    key={k}
-                    className={
-                      active === k
-                        ? "bg-gray-100 text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                    }
-                    onClick={() => {
-                      setSidebar(false);
-                      setActive(k);
-                    }}
-                    aria-current="page"
-                  >
-                    <>
+                  <Link href={route.link} key={k}>
+                    <span
+                      className={
+                        active === k
+                          ? "bg-gray-100 text-gray-900 group flex items-center px-2 py-4 text-base font-bold rounded-md"
+                          : "text-black hover:bg-gray-50  group flex items-center px-2 py-4 text-base font-bold rounded-md"
+                      }
+                      onClick={() => {
+                        setSidebar(false);
+                        setActive(k);
+                      }}
+                    >
                       <span
                         className={
                           active === k
-                            ? "text-gray-500 mr-4 h-6 w-6"
-                            : "text-gray-400 group-hover:text-gray-500 mr-4 h-6 w-6"
+                            ? "text-black h-6 w-6 mr-10"
+                            : "text-white group-hover:bg-white group-hover:text-black mr-10 h-6 w-6"
                         }
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -141,26 +122,30 @@ const DashboardLayout = (props) => {
                       >
                         {route.icon}
                       </span>
-                      {route.name}
-                    </>
+                      <span
+                        className={
+                          active === k
+                            ? "text-black"
+                            : "text-white group-hover:bg-white text-lg group-hover:text-black"
+                        }
+                      >
+                        {route.name}
+                      </span>
+                    </span>
                   </Link>
                 ))}
               </div>
             </nav>
           </div>
-          <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-            <a href="#a" className="flex-shrink-0 group block">
-              <div className="flex items-center">
-                <div>
-                  <RiLogoutBoxFill className="h-6 w-6" />
-                </div>
-                <div className="ml-3">
-                  <p className="text-base font-medium text-gray-700 group-hover:text-gray-900">
-                    Logout
-                  </p>
-                </div>
+          <div onClick={onLogout} className="flex-shrink-0 flex bg-red-600 p-4">
+            <div className="flex mx-auto items-center justify-center">
+              <div>
+                <RiLogoutBoxFill className="h-8 w-8 text-white" />
               </div>
-            </a>
+              <div className="ml-3">
+                <p className="text-base font-bold text-white">Logout</p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -182,17 +167,16 @@ const DashboardLayout = (props) => {
                 href="/fitness"
                 className="flex items-center flex-shrink-0 px-4"
               >
-                <div className="h-8 w-auto mx-auto">
-                  <Image
-                    className="h-8 w-auto mx-auto"
-                    src={Logo}
-                    alt="Databeat"
-                  />
-                </div>
+                <img
+                  className="h-10 w-auto mx-auto"
+                  src={
+                    "https://benorml.com/static/media/logo_outline_white.5835fcd9.png"
+                  }
+                  alt="Databeat"
+                />
               </Link>
-              <nav className="mt-14 flex-1" aria-label="Sidebar">
+              <nav className="mt-7 flex-1" aria-label="Sidebar">
                 <div className="px-2 space-y-1">
-                  {/* <!-- Current: "bg-gray-200 text-gray-900", Default: "text-gray-600 hover:bg-gray-50 hover:text-gray-900" --> */}
                   {dashboardRoutes.map((route, k) => (
                     <Link
                       href={route.link}
@@ -222,7 +206,9 @@ const DashboardLayout = (props) => {
                           {route.icon}
                         </span>
 
-                        <span className="ml-3 font-semibold">{route.name}</span>
+                        <span className="ml-3 font-semibold text-md">
+                          {route.name}
+                        </span>
                       </div>
                     </Link>
                   ))}
@@ -230,18 +216,16 @@ const DashboardLayout = (props) => {
               </nav>
             </div>
             <div
-              className="flex-shrink-0 flex border-t border-black p-4"
-              style={{ backgroundColor: "#6bd6d4" }}
+              onClick={onLogout}
+              className="flex-shrink-0 flex border-t cursor-pointer border-black bg-red-600 hover:bg-red-700 p-4"
             >
               <a href="#a" className="flex-shrink-0 w-full group block">
                 <div className="flex items-center justify-center mx-auto">
                   <div>
-                    <RiLogoutBoxFill className="text-2xl text-black" />
+                    <RiLogoutBoxFill className="text-2xl text-white" />
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-black group-hover:text-gray-900">
-                      Logout
-                    </p>
+                    <p className="text-sm text-white font-bold">Logout</p>
                   </div>
                 </div>
               </a>
@@ -251,20 +235,26 @@ const DashboardLayout = (props) => {
       </div>
       <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
         <div className="lg:hidden">
-          <div className="flex items-center justify-between bg-gray-50 border-b border-gray-200 px-4 py-1.5">
-            <Link href="/dashboard">
-              <img className="h-8 w-auto mx-auto" src={Logo} alt="Databeat" />
+          <div className="flex items-center justify-between bg-black border-b border-gray-200 px-4 py-1.5">
+            <Link href="/fitness">
+              <img
+                className="h-10 w-auto mx-auto"
+                src={
+                  "https://benorml.com/static/media/logo_outline_white.5835fcd9.png"
+                }
+                alt="Databeat"
+              />
             </Link>
             <div>
               <button
                 type="button"
                 onClick={() => setSidebar(true)}
-                className="-mr-3 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-pink-600"
+                className="-mr-3 h-12 w-12 inline-flex items-center justify-center rounded-md hover:text-white text-gray-50 focus:outline-none"
               >
                 <span className="sr-only">Open sidebar</span>
                 {/* <!-- Heroicon name: outline/menu --> */}
                 <svg
-                  className="h-6 w-6"
+                  className="h-7 w-7"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -283,7 +273,7 @@ const DashboardLayout = (props) => {
           </div>
         </div>
         <div className="flex-1 relative z-0 flex overflow-hidden">
-          <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none xl:order-last">
+          <main className="flex-1 relative z-0 overflow-y-auto py-4 focus:outline-none xl:order-last">
             {props.children}
           </main>
         </div>

@@ -2,31 +2,25 @@ import Head from "next/head";
 import Link from "next/link";
 import Layout from "../../components/Layout/Layout";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import GoogleLogin from "react-google-login";
 import { AiFillEye } from "react-icons/ai";
-import { useRouter } from "next/router";
-import { storeAuthData } from "../../redux/actions/userActions";
 
-const initialState = {
-  email: "",
-  password: "",
-  isSubmitting: false,
-  errorMessage: null,
-};
-
-export default function LoginPage() {
+export default function Fitness() {
   const dispatch = useDispatch();
-  const router = useRouter();
   const { isLoggedIn } = useSelector((store) => store);
-  const [data, setData] = useState(initialState);
+  //   const location = useLocation();
+
   const [showPassword, togglePassword] = useState(false);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      router.push("/");
-    }
-  }, []);
+  const initialState = {
+    email: "",
+    password: "",
+    isSubmitting: false,
+    errorMessage: null,
+  };
+
+  const [data, setData] = useState(initialState);
 
   const handleInputChange = (event) => {
     setData({
@@ -66,7 +60,7 @@ export default function LoginPage() {
             errorMessage: resJson.error,
           });
         } else {
-          console.log("-", resJson);
+          console.log(resJson.active_plans);
           dispatch(
             storeAuthData({
               token: resJson.token,
@@ -76,7 +70,6 @@ export default function LoginPage() {
               active_plans: resJson.active_plans,
             })
           );
-          router.push("/fitness");
         }
       })
       .catch((error) => {
