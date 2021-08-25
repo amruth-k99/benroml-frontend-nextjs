@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -22,6 +22,19 @@ const DashboardLayout = (props) => {
     dispatch(clearData());
     router.push("/");
   };
+  useEffect(() => {
+    let url = window.location.pathname;
+    console.log(url);
+    if (url.includes("settings")) {
+      setActive(3);
+    } else if (url.includes("diet")) {
+      setActive(2);
+    } else if (url.includes("track")) {
+      setActive(1);
+    } else {
+      setActive(0);
+    }
+  }, []);
 
   return (
     <div
@@ -178,39 +191,37 @@ const DashboardLayout = (props) => {
               <nav className="mt-7 flex-1" aria-label="Sidebar">
                 <div className="px-2 space-y-1">
                   {dashboardRoutes.map((route, k) => (
-                    <Link
-                      href={route.link}
+                    <div
                       key={k}
-                      aria-current="page"
-                      onClick={() => setActive(k)}
+                      onClick={() => {
+                        setActive(k);
+                        router.push(route.link, undefined, { shallow: true });
+                      }}
+                      className={
+                        active === k
+                          ? "bg-black text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                          : "text-white hover:bg-black hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                      }
                     >
-                      <div
+                      <span
                         className={
                           active === k
-                            ? "bg-black text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                            : "text-white hover:bg-black hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                            ? "text-white mr-3 flex-shrink-0 h-6 w-6"
+                            : "text-white mr-3 flex-shrink-0 h-6 w-6"
                         }
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
                       >
-                        <span
-                          className={
-                            active === k
-                              ? "text-white mr-3 flex-shrink-0 h-6 w-6"
-                              : "text-white mr-3 flex-shrink-0 h-6 w-6"
-                          }
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          aria-hidden="true"
-                        >
-                          {route.icon}
-                        </span>
+                        {route.icon}
+                      </span>
 
-                        <span className="ml-3 font-semibold text-md">
-                          {route.name}
-                        </span>
-                      </div>
-                    </Link>
+                      <span className="ml-3 font-semibold text-md">
+                        {route.name}
+                      </span>
+                    </div>
                   ))}
                 </div>
               </nav>

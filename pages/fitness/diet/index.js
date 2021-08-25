@@ -80,7 +80,7 @@ export default function FitnessDashboard() {
     <DashboardLayout>
       <Head>
         <title>
-          Dashboard | BENORML | Where fitness becomes your lifestyle
+          Mealplan | BENORML | Where fitness becomes your lifestyle
         </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>

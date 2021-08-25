@@ -191,9 +191,7 @@ export default function FitnessDashboard() {
   return (
     <DashboardLayout>
       <Head>
-        <title>
-          Dashboard | BENORML | Where fitness becomes your lifestyle
-        </title>
+        <title>MyTrack | BENORML | Where fitness becomes your lifestyle</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="bg-gray-50">

@@ -1,7 +1,10 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { clearData } from "../redux/actions/userActions";
+import Logo from "assets/logo_outline_white.png";
+import LogoBlack from "assets/logo_outline_1.png";
 
 const NavBar = () => {
   const [navbar, setNavbar] = useState(true);
@@ -44,11 +47,15 @@ const NavBar = () => {
                 <Link href="/">
                   <span className="cursor-pointer">
                     <span className="sr-only">Benorml</span>
-                    <img
-                      className="h-10 w-auto sm:h-10"
-                      src={"assets/logo_outline_white.png"}
-                      alt=""
-                    />
+                    <div className="h-10 w-auto sm:h-10">
+                      <Image
+                        className="h-10 w-auto sm:h-10"
+                        src={Logo}
+                        width={150}
+                        height={40}
+                        alt=""
+                      />
+                    </div>
                   </span>
                 </Link>
                 <div className="-mr-2 flex items-center justify-end md:hidden">
@@ -151,11 +158,15 @@ const NavBar = () => {
         >
           <div className="px-5 pt-4 flex items-center justify-between">
             <Link href="/">
-              <img
-                className="h-8 w-auto"
-                src={"assets/logo_outline_white.png"}
-                alt="Benorml"
-              />
+              <div className="h-10 w-auto sm:h-10">
+                <Image
+                  className="h-10 w-auto sm:h-10"
+                  src={LogoBlack}
+                  width={150}
+                  height={40}
+                  alt=""
+                />
+              </div>
             </Link>
             <div className="-mr-2">
               <button

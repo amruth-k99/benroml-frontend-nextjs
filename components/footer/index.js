@@ -88,19 +88,24 @@ const Footer = () => {
           </a>
         </div>
         <div className="mt-8 text-sm flex justify-center space-x-6">
-          <Link href="/terms-and-conditions">
+          <Link href="/legal/terms-and-conditions">
             <span className="text-gray-400 underline hover:text-gray-300">
               Terms and Conditions
             </span>
           </Link>
-          <Link href="/privacy">
+          <Link href="/legal/privacy">
             <span className="text-gray-400 underline hover:text-gray-300">
               Privacy Policy
             </span>
           </Link>
-          <Link href="/disclaimer">
+          <Link href="/legal/disclaimer">
             <span className="text-gray-400 underline hover:text-gray-300">
               Disclaimer Policy
+            </span>
+          </Link>
+          <Link href="/legal/refund">
+            <span className="text-gray-400 underline hover:text-gray-300">
+              Refund Policy
             </span>
           </Link>
         </div>

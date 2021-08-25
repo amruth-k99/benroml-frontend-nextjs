@@ -65,35 +65,31 @@ const BlogPage = ({ blogData }) => {
     return { __html: blog.body };
   }
 
-  if (!blog.body) {
+  if (!blogData.body) {
     return <Loading />;
   }
 
   return (
     <Layout>
       <NextSeo
-        title={`${blog.title} - BENORML Blogs`}
-        description={blog?.plot}
-        canonical="https://sooperott-dev.com/"
+        title={`${blogData?.title} - BENORML Blogs`}
+        description={blogData?.description}
+        canonical="https://benorml.com/"
         openGraph={{
-          url: "https://sooperott-dev.com/",
-          title: `${blog?.title_name} : SooperOTT`,
-          description: blog?.plot,
+          url: "https://benorml.com/",
+          title: `${blogData?.title} : BENORML Blogs`,
+          description: blogData?.plot,
           images: [
             {
-              url: blog.image_url,
+              url: blogData?.image_url,
               width: 800,
               height: 600,
-              alt: `${blog?.title} : SooperOTT`,
+              alt: `${blogData?.title} : BENORML Blogs`,
             },
           ],
-          site_name: "SooperOTT",
+          site_name: "BENORML Blogs",
         }}
       />
-      <Head>
-        <title> {blog.title} | BENORML Blogs</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <main>
         <div className="relative mt-12 md:mt-20 lg:mt-24 my-10 overflow-hidden">
           <div className="mx-auto px-1 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">

@@ -129,7 +129,9 @@ export default function Fitness() {
   return (
     <Layout>
       <Head>
-        <title>Login | BENORML | Where fitness becomes your lifestyle</title>
+        <title>
+          Forgot Password | BENORML | Where fitness becomes your lifestyle
+        </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="mt-12">

@@ -202,6 +202,7 @@ export default function FitnessDashboard() {
         </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <main className="my-4">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* <!-- Page header --> */}
