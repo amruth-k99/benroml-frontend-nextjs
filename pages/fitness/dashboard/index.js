@@ -1,22 +1,18 @@
 import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
-import DashboardLayout from "./../../../components/Layout/DashboardLayout";
+import DashboardLayout from "@/components/Layout/DashboardLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { FaUserCircle } from "react-icons/fa";
-import WomanAvatar from "../../../assets/gender/woman.png";
-import ManAvatar from "../../../assets/gender/man_1.png";
+import WomanAvatar from "assets/gender/woman.png";
+import ManAvatar from "assets/gender/man_1.png";
 import { BiRun } from "react-icons/bi";
 
-import Modal from "./../../../components/Modal";
-import YetToStart from "./../../../components/yet_to_start";
-import Confetti from "./../../../components/confetti";
-import { getDashboardData } from "./../../../api/dashboard";
-import Loading from "./../../../components/Loading";
-import {
-  clearData,
-  setTodaysWorkout,
-} from "../../../redux/actions/userActions";
+import Modal from "components/Modal";
+import YetToStart from "components/yet_to_start";
+import Confetti from "components/confetti";
+import { getDashboardData } from "api/dashboard";
+import Loading from "components/Loading";
+import { clearData, setTodaysWorkout } from "redux/actions/userActions";
 import { useEffect, useRef, useState } from "react";
 
 export default function FitnessDashboard() {

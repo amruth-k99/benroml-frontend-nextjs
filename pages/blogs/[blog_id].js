@@ -13,6 +13,7 @@ import { AiOutlineLoading } from "react-icons/ai";
 import { HiUserCircle } from "react-icons/hi";
 import moment from "moment";
 import Loading from "../../components/Loading";
+import { NextSeo } from "next-seo";
 
 const BlogPage = ({ blogData }) => {
   const { isLoggedIn, token, name } = useSelector((store) => store);
@@ -49,6 +50,7 @@ const BlogPage = ({ blogData }) => {
         setData({ ...data, error: true, success: false });
       });
   };
+
   useEffect(() => {
     getBlogs(3)
       .then((blogs) => {
@@ -69,6 +71,25 @@ const BlogPage = ({ blogData }) => {
 
   return (
     <Layout>
+      <NextSeo
+        title={`${blog.title} - BENORML Blogs`}
+        description={blog?.plot}
+        canonical="https://sooperott-dev.com/"
+        openGraph={{
+          url: "https://sooperott-dev.com/",
+          title: `${blog?.title_name} : SooperOTT`,
+          description: blog?.plot,
+          images: [
+            {
+              url: blog.image_url,
+              width: 800,
+              height: 600,
+              alt: `${blog?.title} : SooperOTT`,
+            },
+          ],
+          site_name: "SooperOTT",
+        }}
+      />
       <Head>
         <title> {blog.title} | BENORML Blogs</title>
         <link rel="icon" href="/favicon.ico" />

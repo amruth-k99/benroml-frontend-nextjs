@@ -81,7 +81,7 @@ const DashboardLayout = (props) => {
           </div>
 
           <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-            <Link href="/dashboard">
+            <Link href="/fitness">
               <div className="flex-shrink-0 flex items-center px-4">
                 <img
                   className="h-10 w-auto mx-auto"

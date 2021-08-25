@@ -1,0 +1,21 @@
+{
+  "title": "BENORML | Where fitness becomes your lifestyle",
+  "titleTemplate": "%s - BENORML",
+  "description": "BENORML",
+  "openGraph": {
+    "title": "BENORML",
+    "description": "Description | BENORML",
+    "type": "website",
+    "locale": "en_IE",
+    "url": "https://benorml.com",
+    "site_name": "BENORML",
+    "images": [
+      {
+        "url": "public/favicon.ico",
+        "width": 800,
+        "height": 600,
+        "alt": "BENORML"
+      }
+    ]
+  }
+}

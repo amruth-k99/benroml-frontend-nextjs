@@ -215,7 +215,8 @@ export default function FitnessDashboard() {
                       Weight Graph
                     </h2>
                     <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                      A small Description
+                      Check your weekly progress and update your weight every
+                      week
                     </p>
                   </div>
                   <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
@@ -525,7 +526,7 @@ export default function FitnessDashboard() {
                     What's New!
                   </h2>
                   <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                    A small Description
+                    Checkout our new articles about Physical and mental health
                   </p>
                 </div>
                 <div className="border-t pt-5 flow-root">

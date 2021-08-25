@@ -46,9 +46,7 @@ const NavBar = () => {
                     <span className="sr-only">Benorml</span>
                     <img
                       className="h-10 w-auto sm:h-10"
-                      src={
-                        "https://benorml.com/static/media/logo_outline_white.5835fcd9.png"
-                      }
+                      src={"assets/logo_outline_white.png"}
                       alt=""
                     />
                   </span>
@@ -155,9 +153,7 @@ const NavBar = () => {
             <Link href="/">
               <img
                 className="h-8 w-auto"
-                src={
-                  "https://benorml.com/static/media/logo_outline_white.5835fcd9.png"
-                }
+                src={"assets/logo_outline_white.png"}
                 alt="Benorml"
               />
             </Link>

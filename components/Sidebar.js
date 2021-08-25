@@ -5,7 +5,7 @@ import { FiSettings } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 
-import Logo from "../public/assets/logo_outline_white.png";
+import Logo from "public/assets/logo_outline_white.png";
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(true);
   const { isLoggedIn, username } = useSelector((store) => store);
@@ -119,7 +119,7 @@ const Sidebar = () => {
             >
               <img
                 className="mx-auto h-10 w-auto"
-                src={"/public/assets/logo_outline_white.png"}
+                src={"public/assets/logo_outline_white.png"}
                 alt="Benorml"
               />
             </Link>

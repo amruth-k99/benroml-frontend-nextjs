@@ -387,7 +387,7 @@ export default function Fitness() {
           >
             <img
               className="w-full object-cover h-96 lg:w-full lg:h-full"
-              src={"https://benorml.com/static/media/meditate.aff4c1e7.jpg"}
+              src={"assets/meditate.jpg"}
               alt=""
             />
           </div>
