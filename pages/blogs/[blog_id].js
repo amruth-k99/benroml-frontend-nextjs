@@ -65,10 +65,6 @@ const BlogPage = ({ blogData }) => {
     return { __html: blog.body };
   }
 
-  if (!blogData.body) {
-    return <Loading />;
-  }
-
   return (
     <Layout>
       <NextSeo
