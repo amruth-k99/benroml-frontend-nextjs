@@ -1,7 +1,7 @@
 import React from "react";
 // import { Link } from "react-router-dom";
 import Image from "next/image";
-import SumanthImage from "../../assets/images/sumanth.jpg";
+import SumanthImage from "../../public/assets/images/sumanth.jpg";
 const BlogCard = ({
   author,
   link,

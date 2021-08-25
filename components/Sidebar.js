@@ -5,7 +5,7 @@ import { FiSettings } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 
-import Logo from "../assets/logo_outline_white.png";
+import Logo from "../public/assets/logo_outline_white.png";
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(true);
   const { isLoggedIn, username } = useSelector((store) => store);
@@ -117,7 +117,11 @@ const Sidebar = () => {
               href="/fitness"
               className="flex-shrink-0 flex items-center px-4"
             >
-              <img className="mx-auto h-10 w-auto" src={Logo} alt="Benorml" />
+              <img
+                className="mx-auto h-10 w-auto"
+                src={"/public/assets/logo_outline_white.png"}
+                alt="Benorml"
+              />
             </Link>
             <nav
               className="mt-5 flex-shrink-0 h-full divide-y divide-gray-800 overflow-y-auto"

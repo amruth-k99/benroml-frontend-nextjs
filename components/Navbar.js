@@ -1,8 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import Logo from "../assets/logo_outline_white.png";
-import BlackLogo from "../assets/logo_outline_1.png";
 import { useDispatch, useSelector } from "react-redux";
 import { clearData } from "../redux/actions/userActions";
 

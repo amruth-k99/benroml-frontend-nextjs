@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { clearData } from "../../redux/actions/userActions";
 import Image from "next/image";
-import Logo from "../../assets/logo-white-outline.png";
+import Logo from "../../public/assets/logo-white-outline.png";
 
 import { BiFoodMenu } from "react-icons/bi";
 import { FiSettings } from "react-icons/fi";

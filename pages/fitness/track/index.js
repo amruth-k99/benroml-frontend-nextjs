@@ -2,139 +2,178 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import DashboardLayout from "../../../components/Layout/DashboardLayout";
+import LineChart from "../../../components/Charts/LineChart";
 import { useDispatch, useSelector } from "react-redux";
-import { FaUserCircle } from "react-icons/fa";
-import WomanAvatar from "../../../assets/gender/woman.png";
-import ManAvatar from "../../../assets/gender/man_1.png";
-import { BiRun } from "react-icons/bi";
 import YetToStart from "../../../components/yet_to_start";
 import Confetti from "../../../components/confetti";
 import { getDashboardData } from "../../../api/dashboard";
 import Loading from "../../../components/Loading";
-import { clearData, setTodaysWorkout } from "../../../redux/actions/userActions";
+import {
+  clearData,
+  setTodaysWorkout,
+} from "../../../redux/actions/userActions";
 import { useEffect, useState } from "react";
+import moment from "moment";
 
 export default function FitnessDashboard() {
   const dispatch = useDispatch();
-  const { token, username } = useSelector((store) => store);
+  const { token, workouts } = useSelector((store) => store);
 
-  const [today_data, setToday] = useState(false);
-  const [finished, setFinished] = useState(false);
-  const [is_sunday, setSunday] = useState(false);
   const [active_plan, setActvePlan] = useState(true);
+  const [data, setData] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [yet_to_start, setYetToStart] = useState(false);
+  const [new_weight, setNewWeight] = useState(null);
+  const [show_weight, setShowWeight] = useState(false);
+  const [errors, setErrors] = useState({ weight: false, update: false });
   const [user_details, setUserDetails] = useState({
     age: "",
     height: "",
     weight: "",
     gender: "",
   });
-  const [yet_to_start, setYetToStart] = useState(true);
-  const [current_reference, setCurrentReference] = useState({
-    name: "Please click on an exercise",
-    link: "",
+
+  const [today_values, setTodayValues] = useState({
+    "Meal 1": false,
+    "Meal 2": false,
+    "Meal 3": false,
+    Warmup: false,
+    Workout: false,
+    Cardio: false,
+    "Have you followed today's diet correctly?": false,
+    "How is today's workout?": "2",
   });
-  const [loading, setLoading] = useState(true);
+
+  let [today] = useState([
+    { type: "Meal 1", response: false },
+    { type: "Meal 2", response: false },
+    { type: "Meal 3", response: false },
+    { type: "Workout", response: false },
+    { type: "Have you followed today's diet correctly?", response: false },
+    { type: "How is today's workout?", response: 2 },
+  ]);
 
   useEffect(() => {
     setLoading(true);
-    console.log("---");
 
-    getDashboardData(token).then((result) => {
-      if (result.notLoggedIn) {
-        dispatch(clearData());
-        return;
-      }
+    if (workouts) {
+      console.log("no need to update again");
+    } else {
+      getDashboardData(token).then((res) => {
+        if (res.notLoggedIn) {
+          dispatch(clearData());
+          return;
+        }
 
-      if (result.isExpired) {
-        setActvePlan(false);
+        if (res.isExpired) {
+          setActvePlan(false);
+          setLoading(false);
+          return;
+        }
+
+        let weights = res.weeklyWeights.map((i) => i.weight);
+        console.log({ ...res, weeklyWeights: weights });
+        setUserDetails({ ...res, weeklyWeights: weights });
+
+        if (res.yetToStart) {
+          setYetToStart(true);
+          setLoading(false);
+          return;
+        }
+
+        if (res.fitnessFeedback.length) {
+          console.log(res.fitnessFeedback[5]);
+          setTodayValues({
+            "Meal 1": res.fitnessFeedback[0],
+            "Meal 2": res.fitnessFeedback[1],
+            "Meal 3": res.fitnessFeedback[2],
+            Warmup: res.fitnessFeedback[3],
+            "Have you followed today's diet correctly?": res.fitnessFeedback[4],
+            "How is today's workout?": res.fitnessFeedback[5],
+          });
+        }
+        const today = moment();
+        const lastUpdate = moment(res.lastWeightUpdated);
+
+        let difference = today.diff(lastUpdate, "days");
+        console.log(difference);
+        if (difference >= 7) {
+          setShowWeight(true);
+        }
+        setData({ ...res, weeklyWeights: weights });
+
         setLoading(false);
-
-        return;
-      }
-
-      setUserDetails(result);
-
-      console.log("ss", result);
-      if (result.yetToStart) {
-        setYetToStart(true);
-        setLoading(false);
-        return;
-      }
-
-      setYetToStart(false);
-
-      if (new Date().getDay() > 0) {
-        let today = result.weeklyWorkouts;
-        setToday(today);
-        dispatch(setTodaysWorkout(today));
-      } else {
-        console.log("Day type ", new Date().getDay());
-        setSunday(true);
-      }
-      setLoading(false);
-    });
+      });
+    }
   }, []);
 
-  const updateCurrentDate = () => {
+  const onSubmit = (e) => {
+    e.preventDefault();
+    let data = {};
+    for (let i = 0; i < e.target.length; i++) {
+      if (data[e.target[i].name] === undefined) {
+        //first
+        if (e.target[i].name === "How is today's workout?") {
+          data[e.target[i].name] = e.target[i].value;
+        } else {
+          data[e.target[i].name] = e.target[i].checked;
+        }
+      }
+    }
+    delete data[""];
+
+    console.log(data);
+
     fetch(
-      `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/fitness/update/date`,
+      `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/fitness/update/daily`,
       {
+        method: "POST",
+        body: JSON.stringify(data),
         headers: {
           "x-auth-token": token,
+          "Content-Type": "application/json",
         },
-        method: "POST",
-        body: "",
       }
     )
-      .then((result) => result.json())
-      .then((result) => {
-        console.log(result, "updated");
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        setLoading(false);
+        setData({ ...data, todaysUpdate: true });
+      })
+      .catch((err) => {
+        setErrors({ ...errors, weight: true });
+        console.log(err);
       });
   };
 
-  const WorkoutReference = ({ name, link, reference }) => {
-    const [newLink, setLink] = useState("");
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-      console.log(link);
-      let new_link = link;
-      if (new_link.includes("=")) {
-        let videoID = link.split("=")[1];
-        new_link = "https://www.youtube.com/embed/" + videoID;
-        setLink(new_link);
-      } else if (new_link.includes(".be/")) {
-        let videoID = link.split(".be/")[1];
-        new_link = "https://www.youtube.com/embed/" + videoID;
-        setLink(new_link);
-      } else {
-        setLink(new_link);
-      }
-      setTimeout(() => {
-        setLoading(false);
-      }, 100);
-    }, []);
-
-    if (loading) {
-      return <div>{newLink}</div>;
-    } else
-      return (
-        <div className="flex my-3 flex-col bg-white overflow-hidden shadow rounded-lg">
-          <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg">
-            <div className="text-lg font-bold mb-2 uppercase"> {name}</div>
-
-            <iframe
-              src={newLink}
-              frameBorder="0"
-              width={"100%"}
-              height={"300px"}
-              allowFullScreen
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              title="video"
-            />
-          </div>
-        </div>
-      );
+  const updateWeight = () => {
+    const weight = parseFloat(document.getElementById("weight").value);
+    console.log(isNaN(weight));
+    if (!isNaN(weight)) {
+      fetch(
+        `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/fitness/update/weight`,
+        {
+          method: "POST",
+          body: JSON.stringify({ weight }),
+          headers: {
+            "x-auth-token": token,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+          setLoading(false);
+          setData({ ...data, weightUpdateFeedback: true });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setErrors({ ...errors, weight: true });
+    }
   };
 
   if (loading) {
@@ -149,9 +188,6 @@ export default function FitnessDashboard() {
     return <YetToStart details={user_details.userID} />;
   }
 
-  if (is_sunday) {
-    return <SundayMessage />;
-  }
   return (
     <DashboardLayout>
       <Head>
@@ -160,218 +196,438 @@ export default function FitnessDashboard() {
         </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main className="bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* <!-- Page header --> */}
-
-          {finished ? (
-            <div className="block duration-300">
-              <WellDone />
-              <WellDoneModal
-                finished={() => {
-                  setFinished(false);
-                  window.location.reload();
-                }}
-              />
-            </div>
-          ) : (
-            ""
-          )}
-
-          <div className="bg-white shadow-md rounded-xl">
-            <div className="px-4 sm:px-6 lg:container bg-green-100 rounded-lg lg:mx-auto lg:px-8">
-              <div className="py-6 md:flex md:items-center md:justify-between">
-                {/* <!-- Profile --> */}
-                <dl className="grid grid-cols-1 gap-x-4 gap-y-8 lg:grid-cols-4">
-                  <div className="col-span-1 lg:col-span-3">
-                    <div className="flex items-center">
-                      <span className="hidden h-16 w-16 rounded-full sm:block">
-                        {user_details.gender === "Female" ? (
-                          <Image
-                            className="hidden h-16 w-16 rounded-full sm:block"
-                            src={WomanAvatar}
-                            alt="avatar"
-                          />
-                        ) : (
-                          <Image
-                            className="hidden h-16 w-16 rounded-full sm:block"
-                            src={ManAvatar}
-                            alt="avatar"
-                          />
-                        )}
-                      </span>
-                      <div>
-                        <div className="flex items-center">
-                          <FaUserCircle className="h-16 w-16 rounded-full sm:hidden" />
-                          <h1 className="ml-3 text-2xl font-semibold leading-7 text-gray-900 sm:leading-9 sm:">
-                            Welcome, {username}!
-                          </h1>
-                        </div>
-                        <dl className="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
-                          <dd className="mt-3 flex items-center text-sm text-gray-500 font-medium sm:mr-6 sm:mt-0 capitalize">
-                            {/* <!-- Heroicon name: check-circle --> */}
-                            <h2
-                              id="timeline-title"
-                              className="text-md text-justify italic font-semibold text-gray-900"
-                            >
-                              “The path to success is to take massive,
-                              determined action.”
-                            </h2>
-                          </dd>
-                          <p className="ml-auto max-w-2xl text-sm text-gray-700">
-                            – Tony Robbins
-                          </p>
-                        </dl>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* <div className="sm:col-span-1 flex justify-center">
-                <div className="m-auto">
-                  <Link
-                    to="/fitness/start"
-                    className="inline-flex  m-auto items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-newblue-100 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    <BiRun size={27} className="mr-2" />
-                    Start Workout
-                  </Link>
-                </div>
-              </div> */}
-                </dl>
-              </div>
-            </div>
-          </div>
+          <h2 className="text-3xl my-5 leading-6 font-bold text-black">
+            My Track
+          </h2>
 
           <div className="mt-8 mx-auto grid grid-cols-1 gap-6 lg:grid-flow-col-dense lg:grid-cols-3">
-            <div className="space-y-6 lg:col-start-1 lg:col-span-3">
+            <div className="space-y-6 lg:col-start-1 lg:col-span-2">
               {/* <!-- Description list--> */}
-
-              <section aria-labelledby="shadow-lg applicant-information-title">
-                <div className="bg-gradient-to-r from-blue-100 to-orange-100 rounded-md shadow-lg sm:rounded-lg">
-                  <div className="px-4 py-5 sm:px-6">
-                    <h2
-                      id="applicant-information-title"
-                      className="text-2xl leading-6 font-bold text-gray-900"
-                    >
-                      Today's Workout
-                    </h2>
-                    <p className="mt-1 max-w-2xl text-lg text-gray-500">
-                      Please remeber these workouts are carefully planned for
-                      your only!
-                    </p>
-                  </div>
-                  <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-                    <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-8">
-                      <div className="sm:col-span-1">
-                        <WorkoutItem
-                          data={{
-                            title: "Warmup Exercises",
-                            cooldown: today_data.warmup,
-                          }}
-                          number={1}
-                          color="#125704"
-                          refe="reference"
-                          exerciseClicked={(exercise) => {
-                            setCurrentReference(exercise);
-                          }}
-                        />
-                      </div>
-                      <div className="sm:col-span-1">
-                        <WorkoutSetsItem
-                          data={{
-                            title: "Workout",
-                            cooldown: today_data.workout,
-                            sets: today_data.sets,
-                          }}
-                          number={2}
-                          color="red"
-                          exerciseClicked={(link) => {
-                            setCurrentReference(link);
-                          }}
-                        />
-                      </div>
-                      <div className="sm:col-span-1">
-                        <WorkoutItem
-                          data={{
-                            title: "Cooldown Exercises",
-                            cooldown: today_data.cooldown,
-                          }}
-                          number={3}
-                          color="#7c3aed"
-                          exerciseClicked={(link) => {
-                            setCurrentReference(link);
-                          }}
-                        />
-                      </div>
-                      <div className="mt-7">
-                        <WorkoutItem
-                          data={{
-                            title: "Cardio Exercises",
-                            cooldown: today_data.cardio,
-                          }}
-                          number={4}
-                          color="#084abb"
-                          refe="reference"
-                          exerciseClicked={(link) => {
-                            setCurrentReference(link);
-                          }}
-                        />
-                      </div>
-                    </dl>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </div>
-
-          <div className="mt-8 mx-auto grid grid-cols-1 gap-6 lg:grid-flow-col-dense lg:grid-cols-3">
-            <div className="sm:col-span-1 flex justify-center">
-              <div className="m-auto">
-                <div
-                  onClick={() => {
-                    setFinished(true);
-                    updateCurrentDate();
-                  }}
-                  className="inline-flex cursor-pointer  m-auto items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
-                >
-                  {/* <!-- Heroicon name: solid/mail --> */}
-                  <BiRun size={27} className="mr-2" />
-                  Finished!
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 mx-auto grid grid-cols-1 gap-6 lg:grid-flow-col-dense lg:grid-cols-3">
-            <div className="space-y-6 lg:col-start-1 lg:col-span-3">
-              {/* <!-- Description list--> */}
-
-              <section aria-labelledby="shadow-lg applicant-information-title">
-                <div className="bg-white rounded-md shadow-lg sm:rounded-lg">
+              <section aria-labelledby="applicant-information-title">
+                <div className="bg-white shadow sm:rounded-lg">
                   <div className="px-4 py-5 sm:px-6">
                     <h2
                       id="applicant-information-title"
                       className="text-xl leading-6 font-bold text-gray-900"
                     >
-                      Exercise References
+                      Weight Graph
                     </h2>
                     <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                      Click on the Video symbol on each exercise, which will
-                      redirect you to that sepcific exercise
+                      A small Description
                     </p>
                   </div>
                   <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-                    <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-3">
-                      <div className="sm:col-span-1">
-                        <WorkoutReference {...current_reference} />
-                      </div>
-                    </dl>
+                    <LineChart weights={data.weeklyWeights} />
                   </div>
+                  {show_weight && (
+                    <div className="my-6 px-2 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                      <div className="sm:col-span-6">
+                        <label
+                          for="username"
+                          className="block mb-2 text-sm font-medium text-gray-700"
+                        >
+                          Please update your weight
+                        </label>
+                        <div className="mt-1 flex rounded-md shadow-sm">
+                          <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+                            Week {parseInt(user_details.currentDay / 7) + 1}
+                          </span>
+                          <input
+                            type="text"
+                            name="weight"
+                            id="weight"
+                            autocomplete="weight"
+                            placeholder="in Kgs"
+                            defaultValue={new_weight}
+                            onClick={(e) => {
+                              setNewWeight(e.target.value);
+                            }}
+                            className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-none rounded-r-md sm:text-sm border-gray-300"
+                          />
+                        </div>
+                        {data.weightUpdateFeedback && (
+                          <div className="w-full rounded-md bg-green-50 p-4 my-3">
+                            <div className="flex">
+                              <div className="flex-shrink-0">
+                                {/* <!-- Heroicon name: solid/check-circle --> */}
+                                <svg
+                                  onClick={() =>
+                                    setData({
+                                      ...data,
+                                      weightUpdateFeedback: false,
+                                    })
+                                  }
+                                  className="h-5 w-5 text-green-400"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                  aria-hidden="true"
+                                >
+                                  <path
+                                    fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                              <div className="ml-3">
+                                <p className="text-sm font-medium text-green-800">
+                                  Successfully uploaded
+                                </p>
+                              </div>
+                              <div className="ml-auto pl-3">
+                                <div className="-mx-1.5 -my-1.5">
+                                  <button className="inline-flex bg-green-50 rounded-md p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600">
+                                    <span className="sr-only">Dismiss</span>
+                                    {/* <!-- Heroicon name: solid/x --> */}
+                                    <svg
+                                      className="h-5 w-5"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 20 20"
+                                      fill="currentColor"
+                                      aria-hidden="true"
+                                    >
+                                      <path
+                                        fill-rule="evenodd"
+                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                        clip-rule="evenodd"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        <div className="py-5">
+                          <div className="flex justify-center">
+                            <button
+                              onClick={() => updateWeight()}
+                              type="submit"
+                              className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}{" "}
                 </div>
               </section>
+
+              {/* Today's Section */}
+              <section aria-labelledby="applicant-information-title">
+                <form
+                  onSubmit={onSubmit}
+                  className="bg-white shadow sm:rounded-lg"
+                >
+                  <div className="px-4 py-5 sm:px-6">
+                    <h2
+                      id="applicant-information-title"
+                      className="text-xl leading-6 font-bold text-gray-900"
+                    >
+                      How did today's workout go?
+                    </h2>
+                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                      Don't cheat yourself, mark "YES" only if you follow your
+                      meal portions properly...!
+                    </p>
+                  </div>
+
+                  <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
+                    <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                      {today.map((item, k) => (
+                        <li className="col-span-1 bg-white rounded-lg shadow divide-y divide-gray-200">
+                          <div className="w-full flex items-center justify-between p-6 space-x-6">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-3">
+                                <h3 className="text-gray-900 text-sm font-medium">
+                                  {item.type}
+                                </h3>
+                              </div>
+                            </div>
+                          </div>
+                          {k === 5 ? (
+                            <div>
+                              <div className="-mt-px flex divide-x divide-gray-200">
+                                <label
+                                  htmlhtmlFor={`${item.type}_today_yes`}
+                                  className="w-0 py-3 flex-1 flex cursor-pointer"
+                                >
+                                  <div className="flex mx-auto items-center">
+                                    <label
+                                      htmlhtmlFor={`${item.type}_today_yes`}
+                                      className="mr-3 block text-sm font-medium text-gray-700"
+                                    >
+                                      Easy
+                                    </label>
+                                    {console.log(
+                                      "aaa",
+                                      today_values[item.type]
+                                    )}
+                                    <input
+                                      id={`${item.type}_today_yes`}
+                                      name={`${item.type}`}
+                                      type="range"
+                                      max="100"
+                                      className="h-4 border-gray-300"
+                                      defaultValue={today_values[item.type]}
+                                    />
+                                    <label
+                                      htmlhtmlFor={`${item.type}_today_yes`}
+                                      className="ml-3 block text-sm font-medium text-gray-700"
+                                    >
+                                      Hard
+                                    </label>
+                                  </div>
+                                </label>
+                              </div>
+                            </div>
+                          ) : (
+                            <div>
+                              <div className="-mt-px flex divide-x divide-gray-200">
+                                <label
+                                  htmlhtmlFor={`${item.type}_today_yes`}
+                                  className="w-0 py-3 flex-1 flex cursor-pointer"
+                                >
+                                  <div className="flex mx-auto items-center">
+                                    <input
+                                      id={`${item.type}_today_yes`}
+                                      name={`${item.type}`}
+                                      value={true}
+                                      type="radio"
+                                      className="h-4 w-4 border-gray-300"
+                                      defaultChecked={
+                                        today_values[item.type] ? true : false
+                                      }
+                                    />
+                                    <label
+                                      htmlhtmlFor={`${item.type}_today_yes`}
+                                      className="ml-3 block text-sm font-medium text-gray-700"
+                                    >
+                                      Yes
+                                    </label>
+                                  </div>
+                                </label>
+                                <label
+                                  htmlhtmlFor={`${item.type}_today_no`}
+                                  className="-ml-px w-0 flex-1 flex cursor-pointer"
+                                >
+                                  <div className="flex mx-auto items-center">
+                                    <input
+                                      id={`${item.type}_today_no`}
+                                      value={false}
+                                      name={`${item.type}`}
+                                      type="radio"
+                                      className="h-4 w-4 border-gray-300"
+                                      defaultChecked={
+                                        !today_values[item.type] ? true : false
+                                      }
+                                    />
+                                    <label
+                                      htmlhtmlFor={`${item.type}_today_no`}
+                                      className="ml-3 block text-sm font-medium text-gray-700"
+                                    >
+                                      No
+                                    </label>
+                                  </div>
+                                </label>
+                              </div>
+                            </div>
+                          )}{" "}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {data.todaysUpdate && (
+                    <div className="w-full rounded-md bg-green-50 p-4 my-3">
+                      <div className="flex">
+                        <div className="flex-shrink-0">
+                          {/* <!-- Heroicon name: solid/check-circle --> */}
+                          <svg
+                            onClick={() =>
+                              setData({
+                                ...data,
+                                todaysUpdate: false,
+                              })
+                            }
+                            className="h-5 w-5 text-green-400"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-green-800">
+                            Successfully uploaded
+                          </p>
+                        </div>
+                        <div className="ml-auto pl-3">
+                          <div className="-mx-1.5 -my-1.5">
+                            <button className="inline-flex bg-green-50 rounded-md p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600">
+                              <span className="sr-only">Dismiss</span>
+                              {/* <!-- Heroicon name: solid/x --> */}
+                              <svg
+                                className="h-5 w-5"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex my-2 justify-center text-center mx-auto">
+                    <button
+                      type="submit"
+                      className="w-100 my-2 text-center items-center px-2 py-2 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
+              </section>
+              {/* Analyse */}
             </div>
+
+            {/* BLOGS */}
+            <section
+              aria-labelledby="timeline-title"
+              className="lg:col-start-3 lg:col-span-1"
+            >
+              <div className="bg-white shadow sm:rounded-lg">
+                <div className="px-4 py-5 sm:px-6">
+                  <h2
+                    id="timeline-title"
+                    className="text-xl leading-6 font-bold text-gray-900"
+                  >
+                    What's New!
+                  </h2>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                    A small Description
+                  </p>
+                </div>
+                <div className="border-t pt-5 flow-root">
+                  <div className="bg-gray-50 pr-4 sm:pr-6 lg:pr-8 lg:flex-shrink-0 lg:border-l lg:border-gray-200 xl:pr-0">
+                    <div className="px-6">
+                      <div className="pt-2 pb-2">
+                        <h2 className="text-sm font-semibold">Blogs</h2>
+                      </div>
+                      <div>
+                        <ul className="divide-y divide-gray-200">
+                          <li className="py-4">
+                            <a
+                              className="flex space-x-3"
+                              href="/blogs/What_is_the_right_time_to_exercise"
+                              target="_blank"
+                            >
+                              <img
+                                className="h-6 w-6 rounded-full"
+                                src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80"
+                                alt=""
+                              />
+                              <div className="flex-1 space-y-1">
+                                <div className="flex items-center justify-between">
+                                  <h3 className="text-sm font-medium">
+                                    What is the right time to exercise?
+                                  </h3>
+                                  <p className="text-sm text-gray-500">1h</p>
+                                </div>
+                                <p className="text-sm text-gray-500">
+                                  By Sumanth Babu
+                                </p>
+                              </div>
+                            </a>
+                          </li>
+                          <li className="py-4">
+                            <a
+                              className="flex space-x-3"
+                              href="/blogs/What_is_the_right_time_to_exercise"
+                              target="_blank"
+                            >
+                              <img
+                                className="h-6 w-6 rounded-full"
+                                src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80"
+                                alt=""
+                              />
+                              <div className="flex-1 space-y-1">
+                                <div className="flex items-center justify-between">
+                                  <h3 className="text-sm font-medium">
+                                    What is the right time to exercise?
+                                  </h3>
+                                  <p className="text-sm text-gray-500">3d</p>
+                                </div>
+                                <p className="text-sm text-gray-500">
+                                  By Sumanth Babu
+                                </p>
+                              </div>
+                            </a>
+                          </li>
+                          <li className="py-4">
+                            <a
+                              className="flex space-x-3"
+                              href="/blogs/Queen_of_spices_Cardamom"
+                              target="_blank"
+                            >
+                              <img
+                                className="h-6 w-6 rounded-full"
+                                src="https://i.pinimg.com/736x/c4/a2/23/c4a22319149b308d4f9b455bb889a619.jpg"
+                                alt=""
+                              />
+                              <div className="flex-1 space-y-1">
+                                <div className="flex items-center justify-between">
+                                  <h3 className="text-sm font-medium">
+                                    Queen of spices - Cardamom
+                                  </h3>
+                                  <p className="text-sm text-gray-500">4d</p>
+                                </div>
+                                <p className="text-sm text-gray-500">
+                                  By Sumanth Babu
+                                </p>
+                              </div>
+                            </a>
+                          </li>
+
+                          {/* <!-- More items... --> */}
+                        </ul>
+                        <div className="py-4 text-sm border-t border-gray-200">
+                          <a
+                            href="/blogs"
+                            target="_blank"
+                            className="text-indigo-600 font-semibold hover:text-indigo-900"
+                          >
+                            View all activity{" "}
+                            <span aria-hidden="true">&rarr;</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
-          <div id="reference"></div>
         </div>
       </main>
     </DashboardLayout>

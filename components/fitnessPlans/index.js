@@ -40,7 +40,7 @@ const AllFitnessPlans = () => {
         months="12 months"
         includes
         delay="450"
-        color="blue"
+        color="indigo"
         setError={(e) => setError(e)}
         recommended="Loyal Benefits"
         description="It is the consistency of your dedication. With this plan, fitness becomes a part of your life."

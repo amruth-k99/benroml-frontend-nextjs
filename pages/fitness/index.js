@@ -2,16 +2,16 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 
-import { AllFitnessPlans } from "../../components/fitnessPlans";
-import Layout from "../../components/Layout/Layout";
+import { AllFitnessPlans } from "./../../components/fitnessPlans";
+import Layout from "./../../components/Layout/Layout";
 import Meditate from "../../assets/Backgrounds/meditate.jpg";
 import Yoga from "../../assets/images/yoga.jpg";
 import Shoes from "../../assets/Backgrounds/show-wallpaper-cropped.jpg";
 import Squat from "../../assets/images/yoga_computer.jpg";
 import Food from "../../assets/images/food1.jpg";
 import Slider from "react-slick";
-import Footer from "../../components/footer";
-import HelpfulResources from "../../components/Blogs/HelpfulResources";
+import Footer from "./../../components/footer";
+import HelpfulResources from "./../../components/Blogs/HelpfulResources";
 
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import { useSelector } from "react-redux";
@@ -21,7 +21,7 @@ import { useEffect, useRef, useState } from "react";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import NavBar from "../../components/Navbar";
+import NavBar from "./../../components/Navbar";
 
 export default function Fitness() {
   const { isLoggedIn, username } = useSelector((store) => store);
