@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import AOS from "aos";
 import "aos/dist/aos.css";
 import "tailwindcss/tailwind.css";
 import "./footer.css";
@@ -12,18 +11,12 @@ import { Provider } from "react-redux";
 let persistor = persistStore(store);
 
 function MyApp({ Component, pageProps }) {
-  useEffect(() => {
-    AOS.init({
-      once: true, // whether animation should happen only once - while scrolling down
-    });
-  }, []);
-
   return (
     <Provider store={store}>
       <Head />
-      <PersistGate loading={null} persistor={persistor}>
-        <Component {...pageProps} />
-      </PersistGate>
+      {/* <PersistGate loading={null} persistor={persistor}> */}
+      <Component {...pageProps} />
+      {/* </PersistGate> */}
     </Provider>
   );
 }
