@@ -10,7 +10,6 @@ import Shoes from "../../assets/Backgrounds/show-wallpaper-cropped.jpg";
 import Squat from "../../assets/images/yoga_computer.jpg";
 import Food from "../../assets/images/food1.jpg";
 import Slider from "react-slick";
-import Footer from "./../../components/footer";
 import HelpfulResources from "./../../components/Blogs/HelpfulResources";
 
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
@@ -85,7 +84,7 @@ export default function Fitness() {
       </Head>
       <main>
         <div className="max-w-7xl mx-auto">
-          <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
+          <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:min-h-screen lg:w-full lg:pb-28 xl:pb-32">
             <svg
               className="hidden lg:block absolute right-0 inset-y-0 h-full w-48 text-white transform translate-x-1/2"
               fill="currentColor"
@@ -260,19 +259,18 @@ export default function Fitness() {
               </div>
             </main>
           </div>
+          <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+            <img
+              data-aos="fade-up"
+              data-aos-duration="600"
+              data-aos-delay="100"
+              className="w-full object-cover h-72 md:h-96 lg:w-full lg:h-full"
+              src={"https://benorml.com/static/media/yoga.5b79d528.jpg"}
+              alt=""
+            />
+          </div>
         </div>
 
-        <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-          <img
-            data-aos="fade-up"
-            data-aos-duration="600"
-            data-aos-delay="100"
-            className="w-full object-cover h-72 md:h-96 lg:w-full lg:h-full"
-            src={"https://benorml.com/static/media/yoga.5b79d528.jpg"}
-            alt=""
-          />
-        </div>
-        <div className="bg-white overflow-hidden"></div>
         {/* Why Benorml */}
         <div id="start" className="relative pt-10 pb-5 overflow-hidden">
           {/* <div
@@ -576,42 +574,10 @@ export default function Fitness() {
         {/* <!-- Blog section --> */}
 
         <HelpfulResources />
-
-        <Footer />
       </main>
     </Layout>
   );
 }
-
-const SectionItem = ({ image, link, icon, title, description }) => {
-  return (
-    <div className="pt-6 transform shadow-xl h-full hover:scale-105 rounded-lg hover:shadow-2xl duration-200 flex flex-1 w-full">
-      <Link href={link}>
-        <div
-          data-aos="fade-up"
-          data-aos-duration="600"
-          data-aos-delay="100"
-          className="flow-root bg-gray-50 rounded-lg px-6 pb-8 my-4 w-full"
-        >
-          <div className="-mt-24">
-            <div>
-              <span className="inline-flex items-center justify-center rounded-md shadow-lg">
-                <Image
-                  src={image}
-                  className="transition transform duration-300 scale-100 hover:scale-105"
-                  alt="cat"
-                />
-              </span>
-            </div>
-            <p className="mt-3 text-base text-gray-600 font-semibold">
-              {description}
-            </p>
-          </div>
-        </div>
-      </Link>
-    </div>
-  );
-};
 
 const Reviews = ({ reviews }) => {
   const settings = {
