@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AllFitnessPlans } from "./../../components/fitnessPlans";
 import Layout from "./../../components/Layout/Layout";
 import Meditate from "../../assets/Backgrounds/meditate.jpg";
-import Yoga from "../../assets/images/yoga.jpg";
+import Yoga from "assets/images/yoga.jpg";
 import Shoes from "../../assets/Backgrounds/show-wallpaper-cropped.jpg";
 import Squat from "../../assets/images/yoga_computer.jpg";
 import Food from "../../assets/images/food1.jpg";
@@ -260,29 +260,35 @@ export default function Fitness() {
             </main>
           </div>
           <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-            <img
+            <div
               data-aos="fade-up"
               data-aos-duration="600"
               data-aos-delay="100"
               className="w-full object-cover h-72 md:h-96 lg:w-full lg:h-full"
-              src={"https://benorml.com/static/media/yoga.5b79d528.jpg"}
-              alt=""
-            />
+            >
+              <Image
+                width={950}
+                height={900}
+                src={Yoga}
+                objectFit="cover"
+                alt=""
+              />
+            </div>
           </div>
         </div>
 
         {/* Why Benorml */}
-        <div id="start" className="relative pt-10 pb-5 overflow-hidden">
+        <div id="start" className="my-12 pb-5 overflow-hidden">
           {/* <div
           aria-hidden="true"
           className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-gray-100"
         ></div> */}
           <div className="mt-20 bg-gray-200">
             <div className="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-10">
-              <div className="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
+              <div className="px-4 max-w-xl mx-auto sm:px-6 py-4 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
                 <div>
                   <div>
-                    <span className="h-12 w-12 rounded-md flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600">
+                    <span className="h-12 w-12 my-5 rounded-md flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600">
                       {/* <!-- Heroicon name: outline/sparkles --> */}
                       <svg
                         className="h-6 w-6 text-white"
@@ -293,9 +299,9 @@ export default function Fitness() {
                         aria-hidden="true"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
                         />
                       </svg>
@@ -479,9 +485,9 @@ export default function Fitness() {
                         aria-hidden="true"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
                         />
                       </svg>

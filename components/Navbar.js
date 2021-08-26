@@ -21,6 +21,10 @@ const NavBar = () => {
       title: "Blogs",
       link: "/blogs",
     },
+    {
+      title: isLoggedIn ? "Dashboard" : "Login",
+      link: isLoggedIn ? "/fitness/dashboard" : "/login",
+    },
   ];
 
   useEffect(() => {
@@ -76,9 +80,9 @@ const NavBar = () => {
                       aria-hidden="true"
                     >
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="M4 6h16M4 12h16M4 18h16"
                       />
                     </svg>
@@ -98,29 +102,14 @@ const NavBar = () => {
                       <span
                         className={
                           selected === k
-                            ? "font-semibold px-7 py-3 text-white hover:bg-orange-600 rounded-lg duration-200"
-                            : "font-semibold text-white px-7 py-3 hover:text-white hover:bg-orange-600 rounded-lg duration-200"
+                            ? "font-semibold cursor-pointer px-7 py-3 text-white hover:bg-orange-600 rounded-lg duration-200"
+                            : "font-semibold cursor-pointer text-white px-7 py-3 hover:text-white hover:bg-orange-600 rounded-lg duration-200"
                         }
                       >
                         {item.title}
                       </span>
                     </Link>
                   ))}
-
-                  {isLoggedIn ? (
-                    <a
-                      href="/fitness/dashboard"
-                      className="font-semibold px-7 p-3 text-white rounded-lg duration-200 ml-auto"
-                    >
-                      Dashboard
-                    </a>
-                  ) : (
-                    <Link href="/login">
-                      <span className="font-semibold px-7 p-3 rounded-lg duration-200 text-white ml-auto">
-                        Log in
-                      </span>
-                    </Link>
-                  )}
                 </div>
               </div>
             </div>
@@ -185,9 +174,9 @@ const NavBar = () => {
                   aria-hidden="true"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>

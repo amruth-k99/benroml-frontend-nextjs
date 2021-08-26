@@ -87,7 +87,6 @@ const userReducer = (state = initial, action) => {
     }
 
     case actionTypes.CLEAR_DATA: {
-      localStorage.clear();
       return Object.assign({}, state, {
         token: null,
         email: null,

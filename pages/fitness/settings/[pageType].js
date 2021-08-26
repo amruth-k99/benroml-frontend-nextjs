@@ -631,7 +631,6 @@ const Modal = (props) => {
       headers: {
         "Content-Type": "application/json",
         "x-auth-token": "token",
-        "mix-panel": localStorage.getItem("mix-panel"),
       },
     })
       .then((res) => res.json())

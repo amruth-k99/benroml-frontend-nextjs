@@ -4,13 +4,17 @@ import "tailwindcss/tailwind.css";
 import "./footer.css";
 import store from "../redux/store/store";
 import Head from "../components/Head";
-import { PersistGate } from "redux-persist/integration/react";
-import { persistStore } from "redux-persist";
 import { Provider } from "react-redux";
-
-let persistor = persistStore(store);
+import { saveToLocalStorage } from "../redux/localStorage";
 
 function MyApp({ Component, pageProps }) {
+  useEffect(() => {
+    store.subscribe(() => {
+      console.log(store.getState());
+      saveToLocalStorage(store.getState());
+    });
+  }, []);
+
   return (
     <Provider store={store}>
       <Head />
