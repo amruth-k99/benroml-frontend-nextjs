@@ -13,14 +13,17 @@ const routes = [
   {
     link: "/fitness/settings/account",
     title: "Account",
+    permalink: "account",
   },
   {
     link: "/fitness/settings/password",
     title: "Passwords",
+    permalink: "password",
   },
   {
     link: "/fitness/settings/plans",
     title: "Billing and Plans",
+    permalink: "plans",
   },
 ];
 
@@ -47,7 +50,7 @@ export default function SettingsPage() {
     setLoading(true);
 
     if (!pageType) {
-      router.push("/settings/account");
+      router.push("/fitness/settings/account");
     }
 
     fetch(`${process.env.BaseURL}/fitness/user`, {
@@ -62,18 +65,8 @@ export default function SettingsPage() {
         if (result.notLoggedIn) {
           dispatch(clearData());
         } else {
-          console.log("asdasd", result);
-          if (result.yet_to_start) {
-            // setYetToStart(true);
-            setData(result);
-            setLoading(false);
-          } else {
-            setData(result);
-
-            setTimeout(() => {
-              setLoading(false);
-            }, 1000);
-          }
+          setData(result);
+          setLoading(false);
         }
       });
   }, []);
@@ -107,14 +100,16 @@ export default function SettingsPage() {
                         <Link
                           href={route.link}
                           key={k}
-                          onClick={() => setCurrent(k)}
+                          onClick={() => {
+                            setCurrent(route.permalink);
+                          }}
                         >
                           <span
                             className={`${
-                              route.link.includes(current)
+                              route.permalink === pageType
                                 ? "border-black font-bold text-gray-800"
                                 : "border-transparent text-black hover:border-white hover:text-gray-700"
-                            } whitespace-nowrap py-2 mt-2 px-3 border-b-2 font-medium text-sm`}
+                            } whitespace-nowrap cursor-pointer py-2 mt-2 px-3 border-b-2 font-medium text-sm`}
                           >
                             {route.title}
                           </span>
@@ -133,170 +128,6 @@ export default function SettingsPage() {
                   {pageType === "plans" && (
                     <Plans transactions={data.transactions} />
                   )}
-
-                  {/* <!-- Notifications --> */}
-                  {false && (
-                    <section aria-labelledby="plans_heading">
-                      <form action="#" method="POST">
-                        <div className="shadow sm:rounded-md sm:overflow-hidden">
-                          <div className="bg-white py-6 px-4 space-y-6 sm:p-6">
-                            <div>
-                              <h2
-                                id="plan_heading"
-                                className="text-lg leading-6 font-medium text-gray-900"
-                              >
-                                Notifications
-                              </h2>
-                            </div>
-
-                            <fieldset>
-                              <legend className="sr-only">Pricing plans</legend>
-                              <ul className="relative bg-white rounded-md -space-y-px">
-                                <li>
-                                  {/* <!-- On: "bg-orange-50 border-orange-200 z-10", Off: "border-gray-200" --> */}
-                                  <div className="relative border rounded-tl-md rounded-tr-md p-4 flex flex-col md:pl-4 md:pr-6 md:grid md:grid-cols-3">
-                                    <label className="flex items-center text-sm cursor-pointer">
-                                      <input
-                                        name="pricing_plan"
-                                        type="radio"
-                                        className="h-4 w-4 text-orange-500 cursor-pointer focus:ring-gray-900 border-gray-300"
-                                        aria-describedby="plan-option-pricing-0 plan-option-limit-0"
-                                      />
-                                      <span className="ml-3 font-medium text-gray-900">
-                                        Startup
-                                      </span>
-                                    </label>
-                                    <p
-                                      id="plan-option-pricing-0"
-                                      className="ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-center"
-                                    >
-                                      {/* <!-- On: "text-orange-900", Off: "text-gray-900" --> */}
-                                      <span className="font-medium">
-                                        $29 / mo
-                                      </span>
-                                      {/* <!-- On: "text-orange-700", Off: "text-gray-500" --> */}
-                                      <span>($290 / yr)</span>
-                                    </p>
-                                    {/* <!-- On: "text-orange-700", Off: "text-gray-500" --> */}
-                                    <p
-                                      id="plan-option-limit-0"
-                                      className="ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-right"
-                                    >
-                                      Up to 5 active job postings
-                                    </p>
-                                  </div>
-                                </li>
-
-                                <li>
-                                  {/* <!-- On: "bg-orange-50 border-orange-200 z-10", Off: "border-gray-200" --> */}
-                                  <div className="relative border border-gray-200 p-4 flex flex-col md:pl-4 md:pr-6 md:grid md:grid-cols-3">
-                                    <label className="flex items-center text-sm cursor-pointer">
-                                      <input
-                                        name="pricing_plan"
-                                        type="radio"
-                                        className="h-4 w-4 text-orange-500 cursor-pointer focus:ring-gray-900 border-gray-300"
-                                        aria-describedby="plan-option-pricing-1 plan-option-limit-1"
-                                        checked
-                                      />
-                                      <span className="ml-3 font-medium text-gray-900">
-                                        Business
-                                      </span>
-                                    </label>
-                                    <p
-                                      id="plan-option-pricing-1"
-                                      className="ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-center"
-                                    >
-                                      {/* <!-- On: "text-orange-900", Off: "text-gray-900" --> */}
-                                      <span className="font-medium">
-                                        $99 / mo
-                                      </span>
-                                      {/* <!-- On: "text-orange-700", Off: "text-gray-500" --> */}
-                                      <span>($990 / yr)</span>
-                                    </p>
-                                    {/* <!-- On: "text-orange-700", Off: "text-gray-500" --> */}
-                                    <p
-                                      id="plan-option-limit-1"
-                                      className="ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-right"
-                                    >
-                                      Up to 25 active job postings
-                                    </p>
-                                  </div>
-                                </li>
-
-                                <li>
-                                  {/* <!-- On: "bg-orange-50 border-orange-200 z-10", Off: "border-gray-200" --> */}
-                                  <div className="relative border border-gray-200 rounded-bl-md rounded-br-md p-4 flex flex-col md:pl-4 md:pr-6 md:grid md:grid-cols-3">
-                                    <label className="flex items-center text-sm cursor-pointer">
-                                      <input
-                                        name="pricing_plan"
-                                        type="radio"
-                                        className="h-4 w-4 text-orange-500 cursor-pointer focus:ring-gray-900 border-gray-300"
-                                        aria-describedby="plan-option-pricing-2 plan-option-limit-2"
-                                      />
-                                      <span className="ml-3 font-medium text-gray-900">
-                                        Enterprise
-                                      </span>
-                                    </label>
-                                    <p
-                                      id="plan-option-pricing-2"
-                                      className="ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-center"
-                                    >
-                                      {/* <!-- On: "text-orange-900", Off: "text-gray-900" --> */}
-                                      <span className="font-medium">
-                                        $249 / mo
-                                      </span>
-                                      {/* <!-- On: "text-orange-700", Off: "text-gray-500" --> */}
-                                      <span>($2490 / yr)</span>
-                                    </p>
-                                    {/* <!-- On: "text-orange-700", Off: "text-gray-500" --> */}
-                                    <p
-                                      id="plan-option-limit-2"
-                                      className="ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-right"
-                                    >
-                                      Unlimited active job postings
-                                    </p>
-                                  </div>
-                                </li>
-                              </ul>
-                            </fieldset>
-
-                            <div className="flex items-center">
-                              {/* <!-- On: "bg-orange-500", Off: "bg-gray-200" --> */}
-                              <button
-                                type="button"
-                                aria-pressed="true"
-                                aria-labelledby="toggleLabel"
-                                className="bg-gray-200 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors ease-in-out duration-200"
-                              >
-                                <span className="sr-only">Use setting</span>
-                                {/* <!-- On: "translate-x-5", Off: "translate-x-0" --> */}
-                                <span
-                                  aria-hidden="true"
-                                  className="translate-x-0 inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
-                                ></span>
-                              </button>
-                              <span id="toggleLabel" className="ml-3">
-                                <span className="text-sm font-medium text-gray-900">
-                                  Annual billing
-                                </span>
-                                <span className="text-sm text-gray-500">
-                                  (Save 10%)
-                                </span>
-                              </span>
-                            </div>
-                          </div>
-                          <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                            <button
-                              type="submit"
-                              className="bg-gray-800 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-                            >
-                              Save
-                            </button>
-                          </div>
-                        </div>
-                      </form>
-                    </section>
-                  )}
                 </div>
               </div>
             </div>
@@ -308,6 +139,7 @@ export default function SettingsPage() {
 }
 
 const Account = () => {
+  const { token } = useSelector((store) => store);
   const [data, setData] = useState({
     full_name: "",
     email_verified: false,
@@ -321,6 +153,22 @@ const Account = () => {
   const [emailModal, openEmailModal] = useState(false);
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    fetch(`${process.env.BaseURL}/fitness/user`, {
+      headers: {
+        "x-auth-token": token,
+      },
+    })
+      .then((result) => result.json())
+      .then((result) => {
+        if (result.notLoggedIn) {
+          dispatch(clearData());
+        } else {
+          setData(result);
+        }
+      });
+  }, []);
 
   const onFormSubmit = (e) => {
     setSuccess(false);
@@ -895,14 +743,12 @@ const Plans = ({ expiry }) => {
         if (res.error) {
           console.log(res.error);
         } else {
-          console.log(res);
           setTransactions(res.userPayments);
           setDate(
-            moment().add(res.currentDay).format("MMMM DD (ddd), YYYY") +
-              ` (${moment().diff(
-                moment(res.paymentDate),
-                "days"
-              )} Days remaining)`
+            moment()
+              .add(res.daysDifference, "days")
+              .format("MMMM DD (ddd), YYYY") +
+              ` (${res.daysDifference} Days remaining)`
           );
         }
       })

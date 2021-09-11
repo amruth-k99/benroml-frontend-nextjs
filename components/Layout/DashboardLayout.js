@@ -14,6 +14,7 @@ import { FaUserCircle } from "react-icons/fa";
 
 const DashboardLayout = (props) => {
   const dispatch = useDispatch();
+  const { isLoggedIn } = useSelector((store) => store);
   const router = useRouter();
   const [active, setActive] = useState(0);
   const [openSidebar, setSidebar] = useState(false);
@@ -22,7 +23,11 @@ const DashboardLayout = (props) => {
     dispatch(clearData());
     router.push("/");
   };
+
   useEffect(() => {
+    if (!isLoggedIn) {
+      onLogout();
+    }
     let url = window.location.pathname;
     console.log(url);
     if (url.includes("settings")) {
@@ -113,8 +118,8 @@ const DashboardLayout = (props) => {
                     <span
                       className={
                         active === k
-                          ? "bg-gray-100 text-gray-900 group flex items-center px-2 py-4 text-base font-bold rounded-md"
-                          : "text-black hover:bg-gray-50  group flex items-center px-2 py-4 text-base font-bold rounded-md"
+                          ? "bg-gray-100 cursor-pointer text-gray-900 group flex items-center px-2 py-4 text-base font-bold rounded-md"
+                          : "text-black cursor-pointer hover:bg-gray-50  group flex items-center px-2 py-4 text-base font-bold rounded-md"
                       }
                       onClick={() => {
                         setSidebar(false);
@@ -199,8 +204,8 @@ const DashboardLayout = (props) => {
                       }}
                       className={
                         active === k
-                          ? "bg-black text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                          : "text-white hover:bg-black hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                          ? "bg-black cursor-pointer text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                          : "text-white cursor-pointer hover:bg-black hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                       }
                     >
                       <span
