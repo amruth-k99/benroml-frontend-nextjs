@@ -18,9 +18,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
       <Head />
-      {/* <PersistGate loading={null} persistor={persistor}> */}
       <Component {...pageProps} />
-      {/* </PersistGate> */}
     </Provider>
   );
 }

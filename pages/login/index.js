@@ -44,19 +44,16 @@ export default function LoginPage() {
       errorMessage: null,
     });
 
-    fetch(
-      "https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/auth/login",
-      {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-      }
-    )
+    fetch(`${process.env.BaseURL}/auth/login`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+      }),
+    })
       .then((res) => res.json())
       .then((resJson) => {
         if (resJson.error) {
@@ -90,7 +87,7 @@ export default function LoginPage() {
 
   const responseSuccessGoogle = (response) => {
     fetch(
-      `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/auth/google`,
+      `${process.env.BaseURL}/auth/google`,
       {
         method: "POST",
         headers: {
@@ -163,7 +160,7 @@ export default function LoginPage() {
                       </Link>
                     </p>
                   </div>
-                 
+
                   <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md">
                     <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
                       <form className="space-y-6" onSubmit={handleFormSubmit}>

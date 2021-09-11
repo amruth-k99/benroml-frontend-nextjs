@@ -125,7 +125,7 @@ export default function FitnessDashboard() {
     console.log(data);
 
     fetch(
-      `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/fitness/update/daily`,
+      `${process.env.BaseURL}/fitness/update/daily`,
       {
         method: "POST",
         body: JSON.stringify(data),
@@ -152,7 +152,7 @@ export default function FitnessDashboard() {
     console.log(isNaN(weight));
     if (!isNaN(weight)) {
       fetch(
-        `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/fitness/update/weight`,
+        `${process.env.BaseURL}/fitness/update/weight`,
         {
           method: "POST",
           body: JSON.stringify({ weight }),

@@ -15,6 +15,7 @@ const Head = () => {
       <DefaultSeo {...config} />
       <NextHead>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       </NextHead>
     </>
   );

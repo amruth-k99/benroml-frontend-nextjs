@@ -90,7 +90,7 @@ export default function FitnessDashboard() {
 
   const updateCurrentDate = () => {
     fetch(
-      `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/fitness/update/date`,
+      `${process.env.BaseURL}/fitness/update/date`,
       {
         headers: {
           "x-auth-token": token,

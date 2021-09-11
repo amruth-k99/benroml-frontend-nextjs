@@ -26,7 +26,7 @@ export default function FitnessDashboard() {
       return;
     }
     fetch(
-      `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/fitness/mealplan`,
+      `${process.env.BaseURL}/fitness/mealplan`,
       {
         headers: {
           "x-auth-token": token,

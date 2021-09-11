@@ -28,7 +28,7 @@ const YetToStart = (props) => {
     }
     console.log(body);
 
-    fetch(`http://localhost:2001/fitness/update/user`, {
+    fetch(`${process.env.BaseURL}/fitness/update/user`, {
       method: "POST",
       body: JSON.stringify(body),
       headers: {

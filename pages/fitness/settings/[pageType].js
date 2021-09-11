@@ -51,7 +51,7 @@ export default function SettingsPage() {
     }
 
     fetch(
-      `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/fitness/user`,
+      `${process.env.BaseURL}/fitness/user`,
       {
         headers: {
           "x-auth-token": token,
@@ -338,7 +338,7 @@ const Account = () => {
     body.type = "settings";
 
     fetch(
-      `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/fitness/update/user`,
+      `${process.env.BaseURL}/fitness/update/user`,
       {
         method: "POST",
         body: JSON.stringify(body),
@@ -737,7 +737,7 @@ const PasswordsPage = () => {
     if (password.value === password_confirm.value) {
       // API call with {data} data
       fetch(
-        `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/auth/change-password`,
+        `${process.env.BaseURL}/auth/change-password`,
         {
           method: "POST",
           headers: {

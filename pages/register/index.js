@@ -45,21 +45,18 @@ export default function Fitness() {
       })
     );
 
-    fetch(
-      "https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/auth/signup",
-      {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: data.email.trim(),
-          name: data.name.trim(),
-          password: data.password.trim(),
-          mobile: data.mobile.trim(),
-        }),
-      }
-    )
+    fetch(`${process.env.BaseURL}/auth/signup`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: data.email.trim(),
+        name: data.name.trim(),
+        password: data.password.trim(),
+        mobile: data.mobile.trim(),
+      }),
+    })
       .then((res) => res.json())
       .then((resJson) => {
         if (resJson.error) {
@@ -92,16 +89,13 @@ export default function Fitness() {
   };
 
   const responseSuccessGoogle = (response) => {
-    fetch(
-      `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/auth/google`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ tokenId: response.tokenId }),
-      }
-    )
+    fetch(`${process.env.BaseURL}/auth/google`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tokenId: response.tokenId }),
+    })
       .then((res) => res.json())
       .then((resJson) => {
         if (resJson.error) {

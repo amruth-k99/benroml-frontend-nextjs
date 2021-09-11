@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Router } from "next/router";
+import PaymentAlert from "./paymentAlert";
+
 const AllFitnessPlans = () => {
   const [error, setError] = useState("");
   return (
@@ -97,7 +99,7 @@ const PlanComponent = ({
       });
       return;
     }
-    const data = await fetch("http://localhost:2001/payment/order", {
+    const data = await fetch(`${process.env.BaseURL}/payment/order`, {
       body: JSON.stringify({ order_id: price, coupon }),
       method: "POST",
       headers: {
@@ -117,7 +119,7 @@ const PlanComponent = ({
 
     const options = {
       // //Put this in an API
-      key: "rzp_live_3HqMLIvFdKUrOV",
+      key: process.env.razorpay_payment_id,
       name: "Benorml Fitness",
       description: `Payment for ${months} Fitness Subscription`,
       order_id: data.id,
@@ -126,7 +128,7 @@ const PlanComponent = ({
       //Here dont send amount, but, send
       handler: async (response) => {
         console.log(response);
-        const res = await fetch("http://localhost:2001/payment/payment", {
+        const res = await fetch(`${process.env.BaseURL}/payment/payment`, {
           body: JSON.stringify({
             payment_id: response.razorpay_payment_id,
             amount: price,
@@ -162,12 +164,15 @@ const PlanComponent = ({
   };
 
   const checkCoupon = async () => {
-    fetch(`http://localhost:2001/fitness/refer/${price}/${coupon}`, {
-      headers: {
-        "Content-Type": "application/json",
-        "x-auth-token": token,
-      },
-    })
+    fetch(
+      `${process.env.BaseURL}/fitness/refer/${price}/${coupon}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         console.log(data);

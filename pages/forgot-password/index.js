@@ -39,7 +39,7 @@ export default function Fitness() {
     });
 
     fetch(
-      "https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/auth/login",
+      `${process.env.BaseURL}/auth/login`,
       {
         method: "post",
         headers: {
@@ -83,7 +83,7 @@ export default function Fitness() {
 
   const responseSuccessGoogle = (response) => {
     fetch(
-      `https://e1i8ucbq53.execute-api.ap-south-1.amazonaws.com/dev/auth/google`,
+      `${process.env.BaseURL}/auth/google`,
       {
         method: "POST",
         headers: {
