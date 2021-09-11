@@ -2,25 +2,33 @@ import Head from "next/head";
 import Link from "next/link";
 import Layout from "../../components/Layout/Layout";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GoogleLogin from "react-google-login";
 import { AiFillEye } from "react-icons/ai";
+import { Router } from "next/router";
 
 export default function Fitness() {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((store) => store);
-  //   const location = useLocation();
 
-  const [showPassword, togglePassword] = useState(false);
+  const [showOTP, toggleOTP] = useState(false);
 
-  const initialState = {
+  const [data, setData] = useState({
     email: "",
-    password: "",
+    otp: "",
     isSubmitting: false,
+    secondsLeft: 0,
+    message: "",
     errorMessage: null,
-  };
+  });
 
-  const [data, setData] = useState(initialState);
+  useEffect(() => {
+    if (isLoggedIn) {
+      Router.push({
+        pathname: "/",
+      });
+    }
+  }, []);
 
   const handleInputChange = (event) => {
     setData({
@@ -29,28 +37,24 @@ export default function Fitness() {
     });
   };
 
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-
+  const handleFormSubmit = () => {
     setData({
       ...data,
       isSubmitting: true,
       errorMessage: null,
+      message: null,
     });
 
-    fetch(
-      `${process.env.BaseURL}/auth/login`,
-      {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-      }
-    )
+    fetch(`${BASE_URL}/auth/forgot-password`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+      }),
+    })
       .then((res) => res.json())
       .then((resJson) => {
         if (resJson.error) {
@@ -60,57 +64,13 @@ export default function Fitness() {
             errorMessage: resJson.error,
           });
         } else {
-          console.log(resJson.active_plans);
-          dispatch(
-            storeAuthData({
-              token: resJson.token,
-              email: resJson.email,
-              username: resJson.name,
-              isLoggedIn: true,
-              active_plans: resJson.active_plans,
-            })
-          );
-        }
-      })
-      .catch((error) => {
-        setData({
-          ...data,
-          isSubmitting: false,
-          errorMessage: error.error,
-        });
-      });
-  };
-
-  const responseSuccessGoogle = (response) => {
-    fetch(
-      `${process.env.BaseURL}/auth/google`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ tokenId: response.tokenId }),
-      }
-    )
-      .then((res) => res.json())
-      .then((resJson) => {
-        if (resJson.error) {
+          console.log(resJson);
           setData({
             ...data,
             isSubmitting: false,
-            errorMessage: resJson.error,
+            message: resJson.message,
           });
-        } else {
-          console.log(resJson.active_plans);
-          dispatch(
-            storeAuthData({
-              token: resJson.token,
-              email: resJson.email,
-              username: resJson.name,
-              isLoggedIn: true,
-              active_plans: resJson.active_plans,
-            })
-          );
+          toggleOTP(true);
         }
       })
       .catch((error) => {
@@ -120,10 +80,6 @@ export default function Fitness() {
           errorMessage: error.error,
         });
       });
-  };
-
-  const responseFailGoogle = (response) => {
-    console.log(response);
   };
 
   return (
@@ -135,33 +91,32 @@ export default function Fitness() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="mt-12">
-        <div className="relative bg-white">
+        <div className="relative bg-white lg:min-h-screen">
           <div className="max-w-7xl mx-auto">
             <div
               data-aos="fade-up"
               data-aos-duration="600"
               className="relative z-10 pb-16 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32"
             >
-              <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col justify-center sm:px-6 lg:px-8">
-                  <div className="sm:mx-auto sm:w-full sm:max-w-md pt-10">
-                    <h2 className="text-center text-3xl pt-10 font-extrabold text-black">
-                      Sign in to your account
+              <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 lg:min-h-screen">
+                <div className="flex flex-col justify-center sm:px-6 lg:px-8 py-12">
+                  <div className="sm:mx-auto sm:w-full sm:max-w-md">
+                    <h2 className="text-center text-3xl font-extrabold text-black">
+                      Forgot Password ?
                     </h2>
                     <p className="text-center text-sm max-w text-black">
                       Or{" "}
-                      <Link
-                        href="/register"
-                        className="font-medium text-indigo-600 hover:text-indigo-500"
-                      >
-                        Register a New Account
+                      <Link href="/register">
+                        <span className="font-medium cursor-pointer text-indigo-600 hover:text-indigo-500">
+                          Register a New Account
+                        </span>
                       </Link>
                     </p>
                   </div>
-                
+
                   <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md">
                     <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                      <form className="space-y-6" onSubmit={handleFormSubmit}>
+                      <div className="space-y-6">
                         <div>
                           <label
                             htmlFor="email"
@@ -178,64 +133,16 @@ export default function Fitness() {
                               type="email"
                               autocomplete="email"
                               required
-                              className="appearance-none block w-full  text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                              className="appearance-none block w-full text-black px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             />
                           </div>
                         </div>
 
-                        <div>
-                          <label
-                            for="password"
-                            class="block text-sm font-medium text-gray-700"
-                          >
-                            Password
-                          </label>
-                          <div class="mt-1 relative rounded-md shadow-sm">
-                            <input
-                              type={showPassword ? "text" : "password"}
-                              name="password"
-                              id="password"
-                              value={data.password}
-                              onChange={handleInputChange}
-                              autocomplete="current-password"
-                              class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-10 sm:text-sm border-gray-300 rounded-md"
-                              required
-                            />
-                            <div
-                              onClick={() => togglePassword(!showPassword)}
-                              class="absolute cursor-pointer  inset-y-0 right-0 pr-3 flex items-center z-50"
-                            >
-                              {/* <!-- Heroicon name: solid/question-mark-circle --> */}
-                              <AiFillEye className="h-5 w-5" />
-                            </div>
+                        {data.message && (
+                          <div className="bg-indigo-400 rounded p-1 py-2 text-white">
+                            {data.message}
                           </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <input
-                              id="remember_me"
-                              name="remember_me"
-                              type="checkbox"
-                              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                            />
-                            <label
-                              htmlFor="remember_me"
-                              className="ml-2 block text-sm text-black"
-                            >
-                              Remember me
-                            </label>
-                          </div>
-
-                          <div className="text-sm">
-                            <Link
-                              href="/forgot-password"
-                              className="font-medium text-indigo-500 hover:text-indigo-600"
-                            >
-                              Forgot your password?
-                            </Link>
-                          </div>
-                        </div>
+                        )}
 
                         <div>
                           {data.errorMessage && (
@@ -243,48 +150,15 @@ export default function Fitness() {
                               {data.errorMessage}
                             </div>
                           )}
-                          <button
-                            disabled={data.isSubmitting}
-                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black"
-                          >
-                            {data.isSubmitting ? "Loading..." : "Login"}
-                          </button>
-                        </div>
-                      </form>
-
-                      <div className="mt-6">
-                        <div className="relative">
-                          <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-300"></div>
-                          </div>
-                          <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white text-gray-500">
-                              Or continue with
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="mt-6 grid mx-auto grid-cols-1 gap-3">
-                          <GoogleLogin
-                            clientId="1031888379347-n0atmq80jpogbq1fbm215q4svb2ld7go.apps.googleusercontent.com"
-                            buttonText="Sign in with Google"
-                            className="mx-auto font-bold border-black shadow-lg rounded-lg"
-                            onSuccess={responseSuccessGoogle}
-                            onFailure={(e) => responseFailGoogle(e)}
-                            cookiePolicy={"single_host_origin"}
-                          />
-                          <div>
-                            {/* <Link
-                        href="#"
-                        className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                      >
-                        <span className="sr-only">Sign in with Google</span>
-                        {/* <FcGoogle size={30} />{" "}
-                        <span className="font-medium ml-3 my-auto">
-                          Sign in with Google
-                        </span>
-                      </Link> */}
-                          </div>
+                          {
+                            <button
+                              onClick={handleFormSubmit}
+                              disabled={data.isSubmitting}
+                              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black"
+                            >
+                              Send Link
+                            </button>
+                          }
                         </div>
                       </div>
                     </div>

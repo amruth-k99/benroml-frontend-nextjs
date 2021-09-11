@@ -1,8 +1,6 @@
-const { baseURL } = process.env;
 const getDashboardData = (token) => {
   return new Promise(async (resolve, reject) => {
-    console.log(baseURL);
-    await fetch(`${baseURL}/fitness/dashboard`, {
+    await fetch(`${process.env.BaseURL}/fitness/dashboard`, {
       headers: {
         "x-auth-token": token,
       },
@@ -17,7 +15,7 @@ const getDashboardData = (token) => {
 
 const getPlans = (token) => {
   return new Promise(async (resolve, reject) => {
-    await fetch(`${baseURL}/fitness/plans`, {
+    await fetch(`${process.env.BaseURL}/fitness/plans`, {
       headers: {
         "x-auth-token": token,
       },

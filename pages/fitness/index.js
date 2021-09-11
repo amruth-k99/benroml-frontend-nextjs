@@ -140,7 +140,7 @@ export default function Fitness() {
                   data-aos-delay="100"
                   className="mt-3 text-base text-black sm:mt-5 sm:text-xl lg:text-lg xl:text-xl"
                 >
-                  Our plan is about
+                  Our plan is about{" "}
                   <span className="font-bold uppercase">sustainability</span>.
                 </p>
                 {aboutToExpire && (

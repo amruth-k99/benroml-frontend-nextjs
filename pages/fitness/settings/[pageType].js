@@ -50,14 +50,11 @@ export default function SettingsPage() {
       router.push("/settings/account");
     }
 
-    fetch(
-      `${process.env.BaseURL}/fitness/user`,
-      {
-        headers: {
-          "x-auth-token": token,
-        },
-      }
-    )
+    fetch(`${process.env.BaseURL}/fitness/user`, {
+      headers: {
+        "x-auth-token": token,
+      },
+    })
       .then((result) => result.json())
       .then((result) => {
         console.log("Settings", result);
@@ -337,17 +334,14 @@ const Account = () => {
 
     body.type = "settings";
 
-    fetch(
-      `${process.env.BaseURL}/fitness/update/user`,
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-          "x-auth-token": token,
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    fetch(`${process.env.BaseURL}/fitness/update/user`, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "x-auth-token": token,
+        "Content-Type": "application/json",
+      },
+    })
       .then((res) => res.json())
       .then((res) => {
         if (res.error) {
@@ -627,7 +621,7 @@ const Modal = (props) => {
     setError(false);
     setLoading(true);
     setSent(false);
-    fetch(`http://localhost:1337/fitness/verify-email`, {
+    fetch(`${process.env.BaseURL}/fitness/verify-email`, {
       headers: {
         "Content-Type": "application/json",
         "x-auth-token": "token",
@@ -736,20 +730,17 @@ const PasswordsPage = () => {
 
     if (password.value === password_confirm.value) {
       // API call with {data} data
-      fetch(
-        `${process.env.BaseURL}/auth/change-password`,
-        {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "x-auth-token": token,
-          },
-          body: JSON.stringify({
-            old_password: old_password.value,
-            password: password.value,
-          }),
-        }
-      )
+      fetch(`${process.env.BaseURL}/auth/change-password`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-auth-token": token,
+        },
+        body: JSON.stringify({
+          old_password: old_password.value,
+          password: password.value,
+        }),
+      })
         .then((res) => res.json())
         .then((res) => {
           if (res.error) {

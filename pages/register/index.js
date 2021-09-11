@@ -1,6 +1,7 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 import Layout from "../../components/Layout/Layout";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
@@ -379,10 +380,12 @@ export default function Fitness() {
             data-aos-duration="600"
             data-aos-delay="200"
           >
-            <img
-              className="w-full object-cover h-96 lg:w-full lg:h-full"
-              src={"assets/meditate.jpg"}
-              alt=""
+            <Image
+              src={"/assets/meditate.jpg"}
+              alt="sada"
+              width={100}
+              height={100}
+              objectFit="cover"
             />
           </div>
         </div>
